@@ -9,6 +9,9 @@ import '../screens/categories_page.dart';
 import '../screens/favorites_page.dart';
 import '../screens/search_page.dart';
 import '../screens/profile_page.dart';
+import '../screens/adoptions_page.dart';
+import '../models/adoptable_pet.dart';
+import '../widgets/adoptable_pet_card.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -128,6 +131,8 @@ class _HomePageState extends State<HomePage> {
                                   _buildCategories(),
                                   const SizedBox(height: 24),
                                   _buildFeaturedProducts(),
+                                  const SizedBox(height: 24),
+                                  _buildAdoptablePetsSection(),
                                 ],
                               ),
                             ),
@@ -418,6 +423,86 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Widget _buildAdoptablePetsSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              'Pets for Adoption',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AdoptionsPage()),
+                );
+              },
+              child: const Text(
+                'See All',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Color(0xFF5C6BC0),
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        FutureBuilder<List<Map<String, dynamic>>>(
+          future: Provider.of<SupabaseService>(context, listen: false)
+              .getFeaturedAdoptablePets(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(20.0),
+                  child: CircularProgressIndicator(),
+                ),
+              );
+            } else if (snapshot.hasError) {
+              return Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Text('Error: ${snapshot.error}'),
+                ),
+              );
+            } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+              return const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(20.0),
+                  child: Text('No pets available for adoption'),
+                ),
+              );
+            } else {
+              final pets = snapshot.data!
+                  .map((data) => AdoptablePet.fromJson(data))
+                  .toList();
+              
+              return SizedBox(
+                height: 190,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: pets.length,
+                  itemBuilder: (context, index) {
+                    return AdoptablePetCard(pet: pets[index]);
+                  },
+                ),
+              );
+            }
+          },
+        ),
+      ],
+    );
+  }
+
   Widget _buildBottomNavigationBar() {
     return Builder(
       builder: (context) => Container(
@@ -454,6 +539,11 @@ class _HomePageState extends State<HomePage> {
                 label: 'Categories',
               ),
               BottomNavigationBarItem(
+                icon: Icon(Icons.pets_outlined),
+                activeIcon: Icon(Icons.pets),
+                label: 'Adoptions',
+              ),
+              BottomNavigationBarItem(
                 icon: Icon(Icons.favorite_outline),
                 activeIcon: Icon(Icons.favorite),
                 label: 'Favorites',
@@ -474,9 +564,14 @@ class _HomePageState extends State<HomePage> {
               } else if (index == 2) {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const FavoritesPage()),
+                  MaterialPageRoute(builder: (context) => const AdoptionsPage()),
                 );
               } else if (index == 3) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const FavoritesPage()),
+                );
+              } else if (index == 4) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const ProfilePage()),

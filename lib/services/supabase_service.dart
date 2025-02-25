@@ -305,4 +305,60 @@ class SupabaseService with ChangeNotifier {
       print('Error inserting test data: $e');
     }
   }
+
+  // Fetch featured adoptable pets
+  Future<List<Map<String, dynamic>>> getFeaturedAdoptablePets() async {
+    try {
+      print('Fetching featured adoptable pets from Supabase...');
+      
+      final response = await _client
+          .from('adoptable_pets')
+          .select('*')
+          .eq('is_featured', true)
+          .order('created_at', ascending: false);
+      
+      print('Featured adoptable pets response: $response');
+      
+      if (response == null) {
+        print('Featured adoptable pets response is null');
+        return [];
+      }
+      
+      return List<Map<String, dynamic>>.from(response);
+    } catch (e) {
+      print('Error fetching featured adoptable pets: $e');
+      return [];
+    }
+  }
+
+  // Fetch all adoptable pets
+  Future<List<Map<String, dynamic>>> getAllAdoptablePets() async {
+    try {
+      final response = await _client
+          .from('adoptable_pets')
+          .select('*')
+          .order('created_at', ascending: false);
+      
+      return List<Map<String, dynamic>>.from(response);
+    } catch (e) {
+      print('Error fetching all adoptable pets: $e');
+      return [];
+    }
+  }
+
+  // Fetch adoptable pets by species
+  Future<List<Map<String, dynamic>>> getAdoptablePetsBySpecies(String species) async {
+    try {
+      final response = await _client
+          .from('adoptable_pets')
+          .select('*')
+          .eq('species', species)
+          .order('created_at', ascending: false);
+      
+      return List<Map<String, dynamic>>.from(response);
+    } catch (e) {
+      print('Error fetching adoptable pets by species: $e');
+      return [];
+    }
+  }
 } 
