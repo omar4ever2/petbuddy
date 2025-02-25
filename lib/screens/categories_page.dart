@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../widgets/category_card.dart';
+import '../widgets/product_card.dart';
+import '../providers/cart_provider.dart';
+import '../providers/favorites_provider.dart';
 
 class CategoriesPage extends StatelessWidget {
   const CategoriesPage({Key? key}) : super(key: key);
@@ -132,15 +136,226 @@ class CategoryDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Sample products for this category
-    final products = List.generate(
-      10,
-      (index) => {
-        'name': '$categoryName Product ${index + 1}',
-        'price': (19.99 + index * 5.0),
-        'image': 'https://source.unsplash.com/random/300x200?${categoryName.toLowerCase()}',
-      },
-    );
+    // Category-specific products
+    final Map<String, List<Map<String, dynamic>>> categoryProducts = {
+      'Dogs': [
+        {
+          'id': 'dog-food-premium',
+          'name': 'Premium Dog Food',
+          'price': 29.99,
+          'image': 'https://images.unsplash.com/photo-1589924691995-400dc9ecc119?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+        },
+        {
+          'id': 'dog-toy-ball',
+          'name': 'Interactive Dog Ball',
+          'price': 15.99,
+          'image': 'https://images.unsplash.com/photo-1576201836106-db1758fd1c97?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+        },
+        {
+          'id': 'dog-collar-leather',
+          'name': 'Leather Dog Collar',
+          'price': 24.99,
+          'image': 'https://images.unsplash.com/photo-1599839575945-a9e5af0c3fa5?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+        },
+        {
+          'id': 'dog-bed-plush',
+          'name': 'Plush Dog Bed',
+          'price': 49.99,
+          'image': 'https://images.unsplash.com/photo-1541599468348-e96984315921?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+        },
+        {
+          'id': 'dog-leash-retractable',
+          'name': 'Retractable Dog Leash',
+          'price': 19.99,
+          'image': 'https://images.unsplash.com/photo-1567752881298-894bb81f9379?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+        },
+        {
+          'id': 'dog-treats-organic',
+          'name': 'Organic Dog Treats',
+          'price': 12.99,
+          'image': 'https://images.unsplash.com/photo-1582798358481-d199fb7347bb?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+        },
+      ],
+      'Cats': [
+        {
+          'id': 'cat-post-deluxe',
+          'name': 'Deluxe Cat Scratching Post',
+          'price': 49.99,
+          'image': 'https://images.unsplash.com/photo-1545249390-6bdfa286032f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+        },
+        {
+          'id': 'cat-food-organic',
+          'name': 'Organic Cat Food',
+          'price': 24.99,
+          'image': 'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+        },
+        {
+          'id': 'cat-toy-mouse',
+          'name': 'Interactive Mouse Toy',
+          'price': 9.99,
+          'image': 'https://images.unsplash.com/photo-1592194996308-7b43878e84a6?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+        },
+        {
+          'id': 'cat-litter-box',
+          'name': 'Self-Cleaning Litter Box',
+          'price': 89.99,
+          'image': 'https://images.unsplash.com/photo-1555685812-4b8f286e7f30?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+        },
+        {
+          'id': 'cat-bed-plush',
+          'name': 'Plush Cat Bed',
+          'price': 34.99,
+          'image': 'https://images.unsplash.com/photo-1570018144715-43110363d70a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+        },
+      ],
+      'Birds': [
+        {
+          'id': 'bird-cage-deluxe',
+          'name': 'Deluxe Bird Cage',
+          'price': 89.99,
+          'image': 'https://images.unsplash.com/photo-1520808663317-647b476a81b9?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+        },
+        {
+          'id': 'bird-food-premium',
+          'name': 'Premium Bird Seed Mix',
+          'price': 14.99,
+          'image': 'https://images.unsplash.com/photo-1603316468506-b4e34edc2c1e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+        },
+        {
+          'id': 'bird-toy-swing',
+          'name': 'Bird Swing Toy',
+          'price': 12.99,
+          'image': 'https://images.unsplash.com/photo-1559715541-5daf8a0296d0?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+        },
+        {
+          'id': 'bird-perch-natural',
+          'name': 'Natural Wood Perch',
+          'price': 9.99,
+          'image': 'https://images.unsplash.com/photo-1556435847-2d48e5a9381d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+        },
+      ],
+      'Fish': [
+        {
+          'id': 'fish-tank-kit',
+          'name': 'Complete Aquarium Kit',
+          'price': 119.99,
+          'image': 'https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+        },
+        {
+          'id': 'fish-food-flakes',
+          'name': 'Premium Fish Flakes',
+          'price': 8.99,
+          'image': 'https://images.unsplash.com/photo-1584473457493-17c4c24290c5?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+        },
+        {
+          'id': 'fish-filter-advanced',
+          'name': 'Advanced Aquarium Filter',
+          'price': 34.99,
+          'image': 'https://images.unsplash.com/photo-1584473457583-88f2315b8b9c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+        },
+        {
+          'id': 'fish-decor-plants',
+          'name': 'Artificial Aquarium Plants',
+          'price': 19.99,
+          'image': 'https://images.unsplash.com/photo-1584473457568-2af00654cbe9?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+        },
+      ],
+      'Small Pets': [
+        {
+          'id': 'hamster-cage-deluxe',
+          'name': 'Deluxe Hamster Habitat',
+          'price': 49.99,
+          'image': 'https://images.unsplash.com/photo-1425082661705-1834bfd09dca?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+        },
+        {
+          'id': 'rabbit-food-premium',
+          'name': 'Premium Rabbit Food',
+          'price': 15.99,
+          'image': 'https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+        },
+        {
+          'id': 'guinea-pig-bedding',
+          'name': 'Natural Guinea Pig Bedding',
+          'price': 12.99,
+          'image': 'https://images.unsplash.com/photo-1591871937573-74dbba515c4c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+        },
+      ],
+      'Reptiles': [
+        {
+          'id': 'terrarium-kit',
+          'name': 'Complete Terrarium Kit',
+          'price': 99.99,
+          'image': 'https://images.unsplash.com/photo-1504450874802-0ba2bcd9b5ae?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+        },
+        {
+          'id': 'reptile-heat-lamp',
+          'name': 'Reptile Heat Lamp',
+          'price': 29.99,
+          'image': 'https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+        },
+        {
+          'id': 'reptile-food-crickets',
+          'name': 'Live Crickets (50 Pack)',
+          'price': 14.99,
+          'image': 'https://images.unsplash.com/photo-1567381141228-63e141f38f7a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+        },
+      ],
+      'Food & Treats': [
+        {
+          'id': 'dog-food-premium-large',
+          'name': 'Premium Dog Food (Large Breed)',
+          'price': 39.99,
+          'image': 'https://images.unsplash.com/photo-1589924691995-400dc9ecc119?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+        },
+        {
+          'id': 'cat-treats-salmon',
+          'name': 'Salmon Cat Treats',
+          'price': 7.99,
+          'image': 'https://images.unsplash.com/photo-1583511655826-05700442976d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+        },
+        {
+          'id': 'bird-seed-premium',
+          'name': 'Premium Bird Seed Mix',
+          'price': 12.99,
+          'image': 'https://images.unsplash.com/photo-1603316468506-b4e34edc2c1e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+        },
+        {
+          'id': 'fish-food-tropical',
+          'name': 'Tropical Fish Food',
+          'price': 8.99,
+          'image': 'https://images.unsplash.com/photo-1584473457493-17c4c24290c5?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+        },
+      ],
+      'Accessories': [
+        {
+          'id': 'pet-carrier-deluxe',
+          'name': 'Deluxe Pet Carrier',
+          'price': 59.99,
+          'image': 'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+        },
+        {
+          'id': 'pet-grooming-kit',
+          'name': 'Professional Grooming Kit',
+          'price': 49.99,
+          'image': 'https://images.unsplash.com/photo-1516734212186-a967f81ad0d7?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+        },
+        {
+          'id': 'pet-water-fountain',
+          'name': 'Automatic Water Fountain',
+          'price': 39.99,
+          'image': 'https://images.unsplash.com/photo-1585499583264-6edc590c5149?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+        },
+        {
+          'id': 'pet-id-tag',
+          'name': 'Personalized Pet ID Tag',
+          'price': 9.99,
+          'image': 'https://images.unsplash.com/photo-1518155317743-a8ff43ea6a5f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+        },
+      ],
+    };
+
+    // Get products for this category
+    final products = categoryProducts[categoryName] ?? [];
 
     return Scaffold(
       backgroundColor: Colors.grey[50],
@@ -149,23 +364,22 @@ class CategoryDetailPage extends StatelessWidget {
           categoryName,
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
-        backgroundColor: categoryColor.withOpacity(0.1),
       ),
       body: Column(
         children: [
           Container(
             padding: const EdgeInsets.all(16),
-            color: categoryColor.withOpacity(0.1),
+            color: Colors.white,
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Showing ${products.length} products',
+                  '${products.length} Products',
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const Spacer(),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
@@ -185,119 +399,54 @@ class CategoryDetailPage extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: GridView.builder(
-              padding: const EdgeInsets.all(16),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 0.7,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-              ),
-              itemCount: products.length,
-              itemBuilder: (context, index) {
-                final product = products[index];
-                return Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.1),
-                        spreadRadius: 1,
-                        blurRadius: 4,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Stack(
-                        children: [
-                          ClipRRect(
-                            borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-                            child: Image.network(
-                              product['image'] as String,
-                              height: 150,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Container(
-                                  height: 150,
-                                  color: Colors.grey[200],
-                                  child: const Center(
-                                    child: Icon(Icons.error_outline, color: Colors.grey),
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                          Positioned(
-                            top: 8,
-                            right: 8,
-                            child: Container(
-                              padding: const EdgeInsets.all(6),
-                              decoration: const BoxDecoration(
-                                color: Colors.white,
-                                shape: BoxShape.circle,
-                              ),
-                              child: const Icon(
-                                Icons.favorite_border,
-                                size: 18,
-                                color: Colors.red,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              product['name'] as String,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            const SizedBox(height: 8),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  '\$${(product['price'] as double).toStringAsFixed(2)}',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: categoryColor,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                Container(
-                                  padding: const EdgeInsets.all(4),
-                                  decoration: BoxDecoration(
-                                    color: categoryColor,
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: const Icon(
-                                    Icons.add,
-                                    color: Colors.white,
-                                    size: 20,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
+            child: products.isEmpty
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.inventory_2_outlined,
+                          size: 80,
+                          color: Colors.grey[400],
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 16),
+                        const Text(
+                          'No products available',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          'Check back soon for new items',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                : GridView.builder(
+                    padding: const EdgeInsets.all(16),
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 0.7,
+                      crossAxisSpacing: 16,
+                      mainAxisSpacing: 16,
+                    ),
+                    itemCount: products.length,
+                    itemBuilder: (context, index) {
+                      final product = products[index];
+                      return ProductCard(
+                        id: product['id'] as String,
+                        name: product['name'] as String,
+                        price: product['price'] as double,
+                        imageUrl: product['image'] as String,
+                      );
+                    },
                   ),
-                );
-              },
-            ),
           ),
         ],
       ),

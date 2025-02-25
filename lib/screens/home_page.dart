@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../providers/cart_provider.dart';
 import '../screens/cart_page.dart';
 import '../screens/categories_page.dart';
+import '../screens/favorites_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -284,21 +285,25 @@ class HomePage extends StatelessWidget {
             // Sample product data
             final products = [
               {
+                'id': 'dog-food',
                 'name': 'Premium Dog Food',
                 'price': 29.99,
                 'image': 'https://images.unsplash.com/photo-1589924691995-400dc9ecc119?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
               },
               {
+                'id': 'cat-post',
                 'name': 'Cat Scratching Post',
                 'price': 49.99,
                 'image': 'https://images.unsplash.com/photo-1545249390-6bdfa286032f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
               },
               {
+                'id': 'bird-cage',
                 'name': 'Bird Cage Deluxe',
                 'price': 89.99,
                 'image': 'https://images.unsplash.com/photo-1520808663317-647b476a81b9?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
               },
               {
+                'id': 'fish-tank',
                 'name': 'Fish Tank Kit',
                 'price': 119.99,
                 'image': 'https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
@@ -306,6 +311,7 @@ class HomePage extends StatelessWidget {
             ];
             
             return ProductCard(
+              id: products[index]['id'] as String,
               name: products[index]['name'] as String,
               price: products[index]['price'] as double,
               imageUrl: products[index]['image'] as String,
@@ -365,6 +371,11 @@ class HomePage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const CategoriesPage()),
+                );
+              } else if (index == 2) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const FavoritesPage()),
                 );
               }
             },

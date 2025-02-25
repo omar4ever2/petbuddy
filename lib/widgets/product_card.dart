@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/cart_provider.dart';
+import '../providers/favorites_provider.dart';
 
 class ProductCard extends StatelessWidget {
+  final String id;
   final String name;
   final double price;
   final String imageUrl;
 
   const ProductCard({
     Key? key,
+    required this.id,
     required this.name,
     required this.price,
     required this.imageUrl,
@@ -17,6 +20,8 @@ class ProductCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context, listen: false);
+    final favoritesProvider = Provider.of<FavoritesProvider>(context);
+    final isFavorite = favoritesProvider.isFavorite(id);
     
     return Container(
       decoration: BoxDecoration(
@@ -57,16 +62,21 @@ class ProductCard extends StatelessWidget {
               Positioned(
                 top: 8,
                 right: 8,
-                child: Container(
-                  padding: const EdgeInsets.all(6),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.favorite_border,
-                    size: 18,
-                    color: Colors.red,
+                child: GestureDetector(
+                  onTap: () {
+                    favoritesProvider.toggleFavorite(id);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      isFavorite ? Icons.favorite : Icons.favorite_border,
+                      size: 18,
+                      color: Colors.red,
+                    ),
                   ),
                 ),
               ),
@@ -107,7 +117,7 @@ class ProductCard extends StatelessWidget {
                       child: InkWell(
                         onTap: () {
                           cartProvider.addItem(
-                            name, // Using name as ID for simplicity
+                            id,
                             name,
                             price,
                             imageUrl,
@@ -121,7 +131,7 @@ class ProductCard extends StatelessWidget {
                               action: SnackBarAction(
                                 label: 'UNDO',
                                 onPressed: () {
-                                  cartProvider.decreaseQuantity(name);
+                                  cartProvider.decreaseQuantity(id);
                                 },
                               ),
                             ),
