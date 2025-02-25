@@ -122,79 +122,128 @@ class _ProfilePageState extends State<ProfilePage> {
     final username = _profileData?['username'] ?? 'Pet Lover';
     final email = _profileData?['email'] ?? 'user@example.com';
     final avatarUrl = _profileData?['avatar_url'];
+    final fullName = _profileData?['full_name'];
+    final phone = _profileData?['phone'];
     
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Profile header
-          Card(
-            shape: RoundedRectangleBorder(
+          // Profile header with gradient background
+          Container(
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [Color(0xFF5C6BC0), Color(0xFF3949AB)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
               borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.3),
+                  spreadRadius: 1,
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
             ),
             child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
+              padding: const EdgeInsets.all(20),
+              child: Column(
                 children: [
-                  // Avatar
-                  CircleAvatar(
-                    radius: 40,
-                    backgroundColor: const Color(0xFF5C6BC0).withOpacity(0.1),
-                    backgroundImage: avatarUrl != null && avatarUrl.isNotEmpty
-                        ? NetworkImage(avatarUrl)
-                        : null,
-                    child: avatarUrl == null || avatarUrl.isEmpty
-                        ? const Icon(
-                            Icons.person,
-                            size: 40,
-                            color: Color(0xFF5C6BC0),
-                          )
-                        : null,
-                  ),
-                  const SizedBox(width: 16),
-                  
-                  // User info
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          username,
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          email,
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        OutlinedButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const EditProfilePage()),
-                            ).then((_) => _loadProfileData());
-                          },
-                          style: OutlinedButton.styleFrom(
-                            side: const BorderSide(color: Color(0xFF5C6BC0)),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
+                  Row(
+                    children: [
+                      // Avatar with better styling
+                      CircleAvatar(
+                        radius: 40,
+                        backgroundColor: Colors.white.withOpacity(0.9),
+                        backgroundImage: avatarUrl != null && avatarUrl.isNotEmpty
+                            ? NetworkImage(avatarUrl)
+                            : null,
+                        child: avatarUrl == null || avatarUrl.isEmpty
+                            ? Text(
+                                username.isNotEmpty ? username[0].toUpperCase() : '?',
+                                style: const TextStyle(
+                                  fontSize: 36,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF5C6BC0),
+                                ),
+                              )
+                            : null,
+                      ),
+                      const SizedBox(width: 20),
+                      
+                      // User info with better styling
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              username,
+                              style: const TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
                             ),
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                          ),
-                          child: const Text(
-                            'Edit Profile',
-                            style: TextStyle(color: Color(0xFF5C6BC0)),
-                          ),
+                            if (fullName != null && fullName.isNotEmpty)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 4),
+                                child: Text(
+                                  fullName,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.white70,
+                                  ),
+                                ),
+                              ),
+                            const SizedBox(height: 4),
+                            Text(
+                              email,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.white70,
+                              ),
+                            ),
+                            if (phone != null && phone.isNotEmpty)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 4),
+                                child: Text(
+                                  phone,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.white70,
+                                  ),
+                                ),
+                              ),
+                          ],
                         ),
-                      ],
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  // Edit profile button with better styling
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const EditProfilePage()),
+                        ).then((_) => _loadProfileData());
+                      },
+                      icon: const Icon(Icons.edit, size: 18),
+                      label: const Text('Edit Profile'),
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: const Color(0xFF5C6BC0),
+                        backgroundColor: Colors.white,
+                        elevation: 0,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -204,12 +253,41 @@ class _ProfilePageState extends State<ProfilePage> {
           
           const SizedBox(height: 24),
           
-          // Account section
+          // Stats section
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.1),
+                  spreadRadius: 1,
+                  blurRadius: 4,
+                  offset: const Offset(0, 1),
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                _buildStatItem(context, '0', 'Orders'),
+                _buildDivider(),
+                _buildStatItem(context, '${_profileData?['favorites_count'] ?? 0}', 'Favorites'),
+                _buildDivider(),
+                _buildStatItem(context, '0', 'Reviews'),
+              ],
+            ),
+          ),
+          
+          const SizedBox(height: 24),
+          
+          // Account section with improved styling
           _buildSectionTitle('Account'),
           _buildMenuItems([
             ProfileMenuItem(
               icon: Icons.shopping_bag_outlined,
               title: 'My Orders',
+              subtitle: 'View your order history',
               onTap: () {
                 Navigator.push(
                   context,
@@ -220,6 +298,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ProfileMenuItem(
               icon: Icons.notifications_outlined,
               title: 'Notifications',
+              subtitle: 'Manage your notifications',
               trailing: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(
@@ -235,7 +314,6 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
               onTap: () {
-                // Show a temporary message
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Notifications feature coming soon!')),
                 );
@@ -244,8 +322,8 @@ class _ProfilePageState extends State<ProfilePage> {
             ProfileMenuItem(
               icon: Icons.location_on_outlined,
               title: 'Address Book',
+              subtitle: 'Manage your addresses',
               onTap: () {
-                // Show a temporary message
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Address Book feature coming soon!')),
                 );
@@ -254,8 +332,8 @@ class _ProfilePageState extends State<ProfilePage> {
             ProfileMenuItem(
               icon: Icons.credit_card_outlined,
               title: 'Payment Methods',
+              subtitle: 'Manage your payment options',
               onTap: () {
-                // Show a temporary message
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Payment Methods feature coming soon!')),
                 );
@@ -336,28 +414,89 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _buildMenuItems(List<ProfileMenuItem> items) {
-    return Card(
-      shape: RoundedRectangleBorder(
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
         borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            spreadRadius: 1,
+            blurRadius: 4,
+            offset: const Offset(0, 1),
+          ),
+        ],
       ),
       child: ListView.separated(
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
         itemCount: items.length,
-        separatorBuilder: (context, index) => const Divider(height: 1),
+        separatorBuilder: (context, index) => Divider(
+          height: 1,
+          indent: 70,
+          endIndent: 20,
+          color: Colors.grey.withOpacity(0.2),
+        ),
         itemBuilder: (context, index) {
           final item = items[index];
           return ListTile(
-            leading: Icon(
-              item.icon,
-              color: const Color(0xFF5C6BC0),
+            leading: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: const Color(0xFF5C6BC0).withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                item.icon,
+                color: const Color(0xFF5C6BC0),
+                size: 24,
+              ),
             ),
-            title: Text(item.title),
-            trailing: item.trailing ?? const Icon(Icons.arrow_forward_ios, size: 16),
+            title: Text(
+              item.title,
+              style: const TextStyle(
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            subtitle: item.subtitle != null ? Text(item.subtitle!) : null,
+            trailing: item.trailing ?? const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
             onTap: item.onTap,
           );
         },
       ),
+    );
+  }
+
+  Widget _buildStatItem(BuildContext context, String value, String label) {
+    return Expanded(
+      child: Column(
+        children: [
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF5C6BC0),
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey[600],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDivider() {
+    return Container(
+      height: 40,
+      width: 1,
+      color: Colors.grey.withOpacity(0.3),
     );
   }
 
@@ -438,12 +577,14 @@ class _ProfilePageState extends State<ProfilePage> {
 class ProfileMenuItem {
   final IconData icon;
   final String title;
+  final String? subtitle;
   final Widget? trailing;
   final VoidCallback onTap;
 
   ProfileMenuItem({
     required this.icon,
     required this.title,
+    this.subtitle,
     this.trailing,
     required this.onTap,
   });

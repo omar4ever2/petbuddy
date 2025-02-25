@@ -52,10 +52,17 @@ class CartPage extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset(
-                    'assets/images/empty_cart.png',
-                    height: 150,
-                    fit: BoxFit.contain,
+                  Container(
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF5C6BC0).withOpacity(0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.shopping_cart_outlined,
+                      size: 80,
+                      color: Color(0xFF5C6BC0),
+                    ),
                   ),
                   const SizedBox(height: 20),
                   const Text(

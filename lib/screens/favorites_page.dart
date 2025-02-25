@@ -1,60 +1,56 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/favorites_provider.dart';
+import '../services/supabase_service.dart';
 import '../widgets/product_card.dart';
 
-class FavoritesPage extends StatelessWidget {
+class FavoritesPage extends StatefulWidget {
   const FavoritesPage({Key? key}) : super(key: key);
+
+  @override
+  State<FavoritesPage> createState() => _FavoritesPageState();
+}
+
+class _FavoritesPageState extends State<FavoritesPage> {
+  bool _isLoading = false;
+  List<Map<String, dynamic>> _favoriteProducts = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadFavoriteProducts();
+  }
+
+  Future<void> _loadFavoriteProducts() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final supabaseService = Provider.of<SupabaseService>(context, listen: false);
+      final favoritesProvider = Provider.of<FavoritesProvider>(context, listen: false);
+      
+      // Refresh favorites from Supabase
+      await favoritesProvider.refreshFavorites();
+      
+      // Get favorite products with details
+      final products = await supabaseService.getFavoriteProducts();
+      
+      setState(() {
+        _favoriteProducts = products;
+        _isLoading = false;
+      });
+    } catch (e) {
+      print('Error loading favorite products: $e');
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final favoritesProvider = Provider.of<FavoritesProvider>(context);
-    final favoriteIds = favoritesProvider.favoriteIds;
-    
-    // Sample product data - in a real app, you'd fetch these from a database
-    final allProducts = [
-      {
-        'id': 'dog-food',
-        'name': 'Premium Dog Food',
-        'price': 29.99,
-        'image': 'https://images.unsplash.com/photo-1589924691995-400dc9ecc119?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-      },
-      {
-        'id': 'cat-post',
-        'name': 'Cat Scratching Post',
-        'price': 49.99,
-        'image': 'https://images.unsplash.com/photo-1545249390-6bdfa286032f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-      },
-      {
-        'id': 'bird-cage',
-        'name': 'Bird Cage Deluxe',
-        'price': 89.99,
-        'image': 'https://images.unsplash.com/photo-1520808663317-647b476a81b9?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-      },
-      {
-        'id': 'fish-tank',
-        'name': 'Fish Tank Kit',
-        'price': 119.99,
-        'image': 'https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-      },
-      {
-        'id': 'dog-toy',
-        'name': 'Interactive Dog Toy',
-        'price': 15.99,
-        'image': 'https://images.unsplash.com/photo-1576201836106-db1758fd1c97?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-      },
-      {
-        'id': 'cat-food',
-        'name': 'Organic Cat Food',
-        'price': 24.99,
-        'image': 'https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-      },
-    ];
-    
-    // Filter products to only show favorites
-    final favoriteProducts = allProducts
-        .where((product) => favoriteIds.contains(product['id']))
-        .toList();
 
     return Scaffold(
       backgroundColor: Colors.grey[50],
@@ -64,7 +60,7 @@ class FavoritesPage extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         actions: [
-          if (favoriteProducts.isNotEmpty)
+          if (_favoriteProducts.isNotEmpty)
             IconButton(
               icon: const Icon(Icons.delete_outline),
               onPressed: () {
@@ -79,8 +75,9 @@ class FavoritesPage extends StatelessWidget {
                         child: const Text('Cancel'),
                       ),
                       TextButton(
-                        onPressed: () {
-                          favoritesProvider.clearFavorites();
+                        onPressed: () async {
+                          await favoritesProvider.clearFavorites();
+                          _loadFavoriteProducts();
                           Navigator.of(ctx).pop();
                         },
                         child: const Text('Clear'),
@@ -90,71 +87,93 @@ class FavoritesPage extends StatelessWidget {
                 );
               },
             ),
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: _isLoading ? null : _loadFavoriteProducts,
+          ),
         ],
       ),
-      body: favoriteProducts.isEmpty
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.favorite_border,
-                    size: 80,
-                    color: Colors.grey[400],
-                  ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    'No favorites yet',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  const Text(
-                    'Start adding items you like',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey,
-                    ),
-                  ),
-                  const SizedBox(height: 30),
-                  ElevatedButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).primaryColor,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : _favoriteProducts.isEmpty
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(24),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF5C6BC0).withOpacity(0.1),
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.favorite_border,
+                          size: 80,
+                          color: Color(0xFF5C6BC0),
+                        ),
                       ),
-                    ),
-                    child: const Text('Browse Products'),
+                      const SizedBox(height: 20),
+                      const Text(
+                        'No favorites yet',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      const Text(
+                        'Start adding items you like',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      const SizedBox(height: 30),
+                      ElevatedButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF5C6BC0),
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: const Text('Browse Products'),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            )
-          : Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: 0.7,
-                  crossAxisSpacing: 16,
-                  mainAxisSpacing: 16,
+                )
+              : RefreshIndicator(
+                  onRefresh: _loadFavoriteProducts,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: GridView.builder(
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 0.7,
+                        crossAxisSpacing: 16,
+                        mainAxisSpacing: 16,
+                      ),
+                      itemCount: _favoriteProducts.length,
+                      itemBuilder: (context, index) {
+                        final product = _favoriteProducts[index];
+                        return ProductCard(
+                          id: product['id'] as String,
+                          name: product['name'] as String,
+                          price: (product['price'] as num).toDouble(),
+                          imageUrl: product['image_url'] as String? ?? '',
+                          discountPrice: product['discount_price'] != null 
+                              ? (product['discount_price'] as num).toDouble() 
+                              : null,
+                          rating: product['rating'] != null 
+                              ? (product['rating'] as num).toDouble() 
+                              : 0.0,
+                        );
+                      },
+                    ),
+                  ),
                 ),
-                itemCount: favoriteProducts.length,
-                itemBuilder: (context, index) {
-                  final product = favoriteProducts[index];
-                  return ProductCard(
-                    id: product['id'] as String,
-                    name: product['name'] as String,
-                    price: product['price'] as double,
-                    imageUrl: product['image'] as String,
-                  );
-                },
-              ),
-            ),
     );
   }
 } 

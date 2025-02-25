@@ -5,6 +5,7 @@ import 'onboarding_screen.dart';
 import 'package:provider/provider.dart';
 import '../services/supabase_service.dart';
 import 'login_screen.dart';
+import '../providers/favorites_provider.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -44,6 +45,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     _animationController.forward();
     
     Timer(const Duration(seconds: 3), () {
+      final favoritesProvider = Provider.of<FavoritesProvider>(context, listen: false);
       final supabaseService = Provider.of<SupabaseService>(context, listen: false);
       
       // Check if user is authenticated
@@ -87,6 +89,9 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
           ),
         );
       }
+      
+      // Initialize favorites provider
+      favoritesProvider.initialize(supabaseService);
     });
   }
 

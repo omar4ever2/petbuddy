@@ -59,22 +59,24 @@ class ProductCard extends StatelessWidget {
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) {
                             return Container(
-                              color: Colors.grey[200],
+                              color: const Color(0xFFF5F5F5),
                               child: const Center(
                                 child: Icon(
-                                  Icons.image_not_supported,
-                                  color: Colors.grey,
+                                  Icons.pets,
+                                  color: Color(0xFF5C6BC0),
+                                  size: 48,
                                 ),
                               ),
                             );
                           },
                         )
                       : Container(
-                          color: Colors.grey[200],
+                          color: const Color(0xFFF5F5F5),
                           child: const Center(
                             child: Icon(
-                              Icons.image_not_supported,
-                              color: Colors.grey,
+                              Icons.pets,
+                              color: Color(0xFF5C6BC0),
+                              size: 48,
                             ),
                           ),
                         ),

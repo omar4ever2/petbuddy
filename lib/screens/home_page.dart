@@ -249,25 +249,70 @@ class _HomePageState extends State<HomePage> {
     final supabaseService = Provider.of<SupabaseService>(context);
     final username = supabaseService.currentUser?.userMetadata?['username'] as String? ?? 'Pet Lover';
     
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Hello, $username!',
-          style: const TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFF5C6BC0), Color(0xFF3949AB)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
-        const SizedBox(height: 8),
-        const Text(
-          'Find everything your pet needs',
-          style: TextStyle(
-            fontSize: 16,
-            color: Colors.grey,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text(
+                'Hello, $username!',
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              const Spacer(),
+              const Icon(
+                Icons.pets,
+                color: Colors.white70,
+                size: 28,
+              ),
+            ],
           ),
-        ),
-      ],
+          const SizedBox(height: 8),
+          const Text(
+            'Find everything your pet needs',
+            style: TextStyle(
+              fontSize: 16,
+              color: Colors.white70,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.local_offer_outlined, color: Color(0xFF5C6BC0)),
+                const SizedBox(width: 8),
+                const Text(
+                  'Use code PETLOVE for 15% off',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF5C6BC0),
+                  ),
+                ),
+                const Spacer(),
+                const Icon(Icons.arrow_forward_ios, size: 14, color: Color(0xFF5C6BC0)),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -285,14 +330,14 @@ class _HomePageState extends State<HomePage> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            GestureDetector(
-              onTap: () {
+            TextButton.icon(
+              onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const CategoriesPage()),
                 );
               },
-              child: const Text(
+              icon: const Text(
                 'See All',
                 style: TextStyle(
                   fontSize: 14,
@@ -300,12 +345,29 @@ class _HomePageState extends State<HomePage> {
                   fontWeight: FontWeight.w500,
                 ),
               ),
+              label: const Icon(
+                Icons.arrow_forward_ios,
+                size: 12,
+                color: Color(0xFF5C6BC0),
+              ),
             ),
           ],
         ),
         const SizedBox(height: 16),
-        SizedBox(
-          height: 110,
+        Container(
+          height: 120,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.05),
+                spreadRadius: 1,
+                blurRadius: 4,
+                offset: const Offset(0, 1),
+              ),
+            ],
+          ),
           child: _categories.isEmpty
               ? const Center(
                   child: Text('No categories found'),
@@ -314,6 +376,7 @@ class _HomePageState extends State<HomePage> {
                   scrollDirection: Axis.horizontal,
                   itemCount: _categories.length,
                   physics: const BouncingScrollPhysics(),
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
                   itemBuilder: (context, index) {
                     final category = _categories[index];
                     return CategoryItem(
@@ -527,6 +590,7 @@ class _HomePageState extends State<HomePage> {
             unselectedItemColor: Colors.grey,
             showUnselectedLabels: true,
             type: BottomNavigationBarType.fixed,
+            elevation: 20,
             items: const [
               BottomNavigationBarItem(
                 icon: Icon(Icons.home_outlined),
