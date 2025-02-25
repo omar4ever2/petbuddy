@@ -4,6 +4,7 @@ import '../widgets/category_item.dart';
 import 'package:provider/provider.dart';
 import '../providers/cart_provider.dart';
 import '../screens/cart_page.dart';
+import '../screens/categories_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -192,45 +193,55 @@ class HomePage extends StatelessWidget {
     final categories = ['Dogs', 'Cats', 'Birds', 'Fish', 'Small Pets'];
     final icons = [Icons.pets, Icons.content_cut, Icons.front_hand, Icons.water, Icons.home];
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'Categories',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+    return Builder(
+      builder: (context) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Categories',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            Text(
-              'See All',
-              style: TextStyle(
-                fontSize: 14,
-                color: Color(0xFF5C6BC0),
-                fontWeight: FontWeight.w500,
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const CategoriesPage()),
+                  );
+                },
+                child: const Text(
+                  'See All',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Color(0xFF5C6BC0),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        SizedBox(
-          height: 110,
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: categories.length,
-            physics: const BouncingScrollPhysics(),
-            itemBuilder: (context, index) {
-              return CategoryItem(
-                icon: icons[index],
-                title: categories[index],
-              );
-            },
+            ],
           ),
-        ),
-      ],
+          const SizedBox(height: 16),
+          SizedBox(
+            height: 110,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: categories.length,
+              physics: const BouncingScrollPhysics(),
+              itemBuilder: (context, index) {
+                return CategoryItem(
+                  icon: icons[index],
+                  title: categories[index],
+                );
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -306,48 +317,58 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildBottomNavigationBar() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 8,
-            offset: const Offset(0, -3),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-        child: BottomNavigationBar(
-          selectedItemColor: const Color(0xFF5C6BC0),
-          unselectedItemColor: Colors.grey,
-          showUnselectedLabels: true,
-          type: BottomNavigationBarType.fixed,
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home_outlined),
-              activeIcon: Icon(Icons.home),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.category_outlined),
-              activeIcon: Icon(Icons.category),
-              label: 'Categories',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.favorite_outline),
-              activeIcon: Icon(Icons.favorite),
-              label: 'Favorites',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline),
-              activeIcon: Icon(Icons.person),
-              label: 'Profile',
+    return Builder(
+      builder: (context) => Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.1),
+              spreadRadius: 1,
+              blurRadius: 8,
+              offset: const Offset(0, -3),
             ),
           ],
-          currentIndex: 0,
+        ),
+        child: ClipRRect(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+          child: BottomNavigationBar(
+            selectedItemColor: const Color(0xFF5C6BC0),
+            unselectedItemColor: Colors.grey,
+            showUnselectedLabels: true,
+            type: BottomNavigationBarType.fixed,
+            items: const [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home_outlined),
+                activeIcon: Icon(Icons.home),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.category_outlined),
+                activeIcon: Icon(Icons.category),
+                label: 'Categories',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.favorite_outline),
+                activeIcon: Icon(Icons.favorite),
+                label: 'Favorites',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.person_outline),
+                activeIcon: Icon(Icons.person),
+                label: 'Profile',
+              ),
+            ],
+            currentIndex: 0,
+            onTap: (index) {
+              if (index == 1) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const CategoriesPage()),
+                );
+              }
+            },
+          ),
         ),
       ),
     );
