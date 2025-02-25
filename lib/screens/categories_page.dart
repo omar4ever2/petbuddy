@@ -4,6 +4,7 @@ import '../widgets/category_card.dart';
 import '../widgets/product_card.dart';
 import '../providers/cart_provider.dart';
 import '../providers/favorites_provider.dart';
+import '../screens/search_page.dart';
 
 class CategoriesPage extends StatelessWidget {
   const CategoriesPage({Key? key}) : super(key: key);
@@ -81,7 +82,10 @@ class CategoriesPage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.search),
             onPressed: () {
-              // Implement search functionality
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SearchPage()),
+              );
             },
           ),
         ],
