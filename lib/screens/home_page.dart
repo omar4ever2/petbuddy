@@ -7,6 +7,7 @@ import '../screens/cart_page.dart';
 import '../screens/categories_page.dart';
 import '../screens/favorites_page.dart';
 import '../screens/search_page.dart';
+import '../screens/profile_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -339,7 +340,6 @@ class HomePage extends StatelessWidget {
     return Builder(
       builder: (context) => Container(
         decoration: BoxDecoration(
-          color: Colors.white,
           boxShadow: [
             BoxShadow(
               color: Colors.grey.withOpacity(0.1),
@@ -350,8 +350,12 @@ class HomePage extends StatelessWidget {
           ],
         ),
         child: ClipRRect(
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
           child: BottomNavigationBar(
+            backgroundColor: Colors.white,
             selectedItemColor: const Color(0xFF5C6BC0),
             unselectedItemColor: Colors.grey,
             showUnselectedLabels: true,
@@ -389,6 +393,11 @@ class HomePage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const FavoritesPage()),
+                );
+              } else if (index == 3) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ProfilePage()),
                 );
               }
             },
