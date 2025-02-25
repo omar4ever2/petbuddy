@@ -1,21 +1,35 @@
 import 'package:flutter/foundation.dart';
 
 class FavoritesProvider with ChangeNotifier {
-  final Set<String> _favoriteIds = {};
+  final List<String> _favoriteIds = [];
   
-  Set<String> get favoriteIds => {..._favoriteIds};
+  List<String> get favoriteIds => [..._favoriteIds];
   
-  bool isFavorite(String productId) {
-    return _favoriteIds.contains(productId);
+  int get favoriteCount => _favoriteIds.length;
+  
+  bool isFavorite(String id) {
+    return _favoriteIds.contains(id);
   }
   
-  int get favoritesCount => _favoriteIds.length;
+  void addFavorite(String id) {
+    if (!_favoriteIds.contains(id)) {
+      _favoriteIds.add(id);
+      notifyListeners();
+    }
+  }
   
-  void toggleFavorite(String productId) {
-    if (_favoriteIds.contains(productId)) {
-      _favoriteIds.remove(productId);
+  void removeFavorite(String id) {
+    if (_favoriteIds.contains(id)) {
+      _favoriteIds.remove(id);
+      notifyListeners();
+    }
+  }
+  
+  void toggleFavorite(String id) {
+    if (_favoriteIds.contains(id)) {
+      _favoriteIds.remove(id);
     } else {
-      _favoriteIds.add(productId);
+      _favoriteIds.add(id);
     }
     notifyListeners();
   }

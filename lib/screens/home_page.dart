@@ -3,14 +3,72 @@ import '../widgets/product_card.dart';
 import '../widgets/category_item.dart';
 import 'package:provider/provider.dart';
 import '../providers/cart_provider.dart';
+import '../services/supabase_service.dart';
 import '../screens/cart_page.dart';
 import '../screens/categories_page.dart';
 import '../screens/favorites_page.dart';
 import '../screens/search_page.dart';
 import '../screens/profile_page.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  bool _isLoading = true;
+  List<Map<String, dynamic>> _categories = [];
+  List<Map<String, dynamic>> _featuredProducts = [];
+  String? _errorMessage;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      final supabaseService = Provider.of<SupabaseService>(context, listen: false);
+      
+      // Debug print to check if service is available
+      print('Fetching categories and products from Supabase...');
+      
+      final categories = await supabaseService.getCategories();
+      print('Categories fetched: ${categories.length}');
+      
+      final featuredProducts = await supabaseService.getFeaturedProducts();
+      print('Featured products fetched: ${featuredProducts.length}');
+      
+      // Debug print to see what data we got
+      if (categories.isNotEmpty) {
+        print('First category: ${categories[0]}');
+      }
+      
+      if (featuredProducts.isNotEmpty) {
+        print('First product: ${featuredProducts[0]}');
+      }
+      
+      setState(() {
+        _categories = categories;
+        _featuredProducts = featuredProducts;
+        _isLoading = false;
+      });
+    } catch (e) {
+      print('Error loading data: $e');
+      setState(() {
+        _errorMessage = 'Failed to load data: $e';
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,22 +79,60 @@ class HomePage extends StatelessWidget {
           children: [
             _buildAppBar(context),
             Expanded(
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildWelcomeSection(context),
-                      const SizedBox(height: 24),
-                      _buildCategories(),
-                      const SizedBox(height: 24),
-                      _buildFeaturedProducts(),
-                    ],
-                  ),
-                ),
-              ),
+              child: _isLoading
+                  ? const Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : _errorMessage != null
+                      ? Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.error_outline,
+                                color: Colors.red,
+                                size: 60,
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                'Something went wrong',
+                                style: Theme.of(context).textTheme.titleLarge,
+                              ),
+                              const SizedBox(height: 8),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 32),
+                                child: Text(
+                                  _errorMessage!,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              ElevatedButton(
+                                onPressed: _loadData,
+                                child: const Text('Try Again'),
+                              ),
+                            ],
+                          ),
+                        )
+                      : RefreshIndicator(
+                          onRefresh: _loadData,
+                          child: SingleChildScrollView(
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  _buildWelcomeSection(context),
+                                  const SizedBox(height: 24),
+                                  _buildCategories(),
+                                  const SizedBox(height: 24),
+                                  _buildFeaturedProducts(),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
             ),
           ],
         ),
@@ -145,193 +241,179 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildWelcomeSection(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF5C6BC0), Color(0xFF3949AB)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+    final supabaseService = Provider.of<SupabaseService>(context);
+    final username = supabaseService.currentUser?.userMetadata?['username'] as String? ?? 'Pet Lover';
+    
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Hello, $username!',
+          style: const TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+          ),
         ),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Welcome to PetBuddy',
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Find everything your pet needs',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.white.withOpacity(0.9),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: Theme.of(context).primaryColor,
-                    elevation: 0,
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: const Text('Shop Now'),
-                ),
-              ],
-            ),
+        const SizedBox(height: 8),
+        const Text(
+          'Find everything your pet needs',
+          style: TextStyle(
+            fontSize: 16,
+            color: Colors.grey,
           ),
-          Image.network(
-            'https://cdn-icons-png.flaticon.com/512/1998/1998627.png',
-            height: 100,
-            width: 100,
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
   Widget _buildCategories() {
-    final categories = ['Dogs', 'Cats', 'Birds', 'Fish', 'Small Pets'];
-    final icons = [Icons.pets, Icons.content_cut, Icons.front_hand, Icons.water, Icons.home];
-
-    return Builder(
-      builder: (context) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                'Categories',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              'Categories',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
               ),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const CategoriesPage()),
-                  );
-                },
-                child: const Text(
-                  'See All',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Color(0xFF5C6BC0),
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          SizedBox(
-            height: 110,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: categories.length,
-              physics: const BouncingScrollPhysics(),
-              itemBuilder: (context, index) {
-                return CategoryItem(
-                  icon: icons[index],
-                  title: categories[index],
+            ),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const CategoriesPage()),
                 );
               },
+              child: const Text(
+                'See All',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Color(0xFF5C6BC0),
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        SizedBox(
+          height: 110,
+          child: _categories.isEmpty
+              ? const Center(
+                  child: Text('No categories found'),
+                )
+              : ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: _categories.length,
+                  physics: const BouncingScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    final category = _categories[index];
+                    return CategoryItem(
+                      id: category['id'],
+                      icon: _getCategoryIcon(category['icon_name']),
+                      title: category['name'],
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CategoriesPage(
+                              categoryId: category['id'],
+                              categoryName: category['name'],
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
+        ),
+      ],
     );
+  }
+
+  IconData _getCategoryIcon(String? iconName) {
+    switch (iconName) {
+      case 'pets':
+        return Icons.pets;
+      case 'content_cut':
+        return Icons.content_cut;
+      case 'front_hand':
+        return Icons.front_hand;
+      case 'water':
+        return Icons.water;
+      case 'home':
+        return Icons.home;
+      default:
+        return Icons.category;
+    }
   }
 
   Widget _buildFeaturedProducts() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Row(
+        Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
+            const Text(
               'Featured Products',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            Text(
-              'See All',
-              style: TextStyle(
-                fontSize: 14,
-                color: Color(0xFF5C6BC0),
-                fontWeight: FontWeight.w500,
+            GestureDetector(
+              onTap: () {
+                // Navigate to all products page
+              },
+              child: const Text(
+                'See All',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Color(0xFF5C6BC0),
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
           ],
         ),
         const SizedBox(height: 16),
-        GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 0.7,
-            crossAxisSpacing: 16,
-            mainAxisSpacing: 16,
-          ),
-          itemCount: 4,
-          itemBuilder: (context, index) {
-            // Sample product data
-            final products = [
-              {
-                'id': 'dog-food',
-                'name': 'Premium Dog Food',
-                'price': 29.99,
-                'image': 'https://images.unsplash.com/photo-1589924691995-400dc9ecc119?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-              },
-              {
-                'id': 'cat-post',
-                'name': 'Cat Scratching Post',
-                'price': 49.99,
-                'image': 'https://images.unsplash.com/photo-1545249390-6bdfa286032f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-              },
-              {
-                'id': 'bird-cage',
-                'name': 'Bird Cage Deluxe',
-                'price': 89.99,
-                'image': 'https://images.unsplash.com/photo-1520808663317-647b476a81b9?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-              },
-              {
-                'id': 'fish-tank',
-                'name': 'Fish Tank Kit',
-                'price': 119.99,
-                'image': 'https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-              },
-            ];
-            
-            return ProductCard(
-              id: products[index]['id'] as String,
-              name: products[index]['name'] as String,
-              price: products[index]['price'] as double,
-              imageUrl: products[index]['image'] as String,
-            );
-          },
-        ),
+        _featuredProducts.isEmpty
+            ? const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(20.0),
+                  child: Text('No featured products found'),
+                ),
+              )
+            : GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 0.7,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                ),
+                itemCount: _featuredProducts.length,
+                itemBuilder: (context, index) {
+                  final product = _featuredProducts[index];
+                  return ProductCard(
+                    id: product['id'],
+                    name: product['name'],
+                    price: (product['price'] as num).toDouble(),
+                    imageUrl: product['image'] ?? '',
+                    discountPrice: product['discount_price'] != null
+                        ? (product['discount_price'] as num).toDouble()
+                        : null,
+                    rating: product['average_rating'] != null
+                        ? (product['average_rating'] as num).toDouble()
+                        : 0.0,
+                  );
+                },
+              ),
       ],
     );
   }

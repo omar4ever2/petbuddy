@@ -2,67 +2,100 @@ import 'package:flutter/foundation.dart';
 import '../models/cart_item.dart';
 
 class CartProvider with ChangeNotifier {
-  final Map<String, CartItem> _items = {};
+  Map<String, CartItem> _items = {};
 
-  Map<String, CartItem> get items => {..._items};
+  Map<String, CartItem> get items {
+    return {..._items};
+  }
 
-  int get itemCount => _items.length;
+  int get itemCount {
+    return _items.length;
+  }
 
   double get totalAmount {
-    double total = 0.0;
+    var total = 0.0;
     _items.forEach((key, cartItem) {
       total += cartItem.price * cartItem.quantity;
     });
     return total;
   }
 
-  void addItem(String productId, String name, double price, String imageUrl) {
-    if (_items.containsKey(productId)) {
+  bool isInCart(String id) {
+    return _items.containsKey(id);
+  }
+
+  void addToCart(String id, String name, double price, String imageUrl, int quantity) {
+    if (_items.containsKey(id)) {
       // Increase quantity
       _items.update(
-        productId,
-        (existingCartItem) => existingCartItem.copyWith(
-          quantity: existingCartItem.quantity + 1,
+        id,
+        (existingCartItem) => CartItem(
+          id: existingCartItem.id,
+          name: existingCartItem.name,
+          price: existingCartItem.price,
+          imageUrl: existingCartItem.imageUrl,
+          quantity: existingCartItem.quantity + quantity,
         ),
       );
     } else {
       // Add new item
       _items.putIfAbsent(
-        productId,
+        id,
         () => CartItem(
-          id: DateTime.now().toString(),
+          id: id,
           name: name,
           price: price,
           imageUrl: imageUrl,
+          quantity: quantity,
         ),
       );
     }
     notifyListeners();
   }
 
-  void removeItem(String productId) {
-    _items.remove(productId);
+  void removeFromCart(String id) {
+    _items.remove(id);
     notifyListeners();
   }
 
-  void decreaseQuantity(String productId) {
-    if (!_items.containsKey(productId)) return;
+  void decreaseQuantity(String id) {
+    if (!_items.containsKey(id)) return;
     
-    if (_items[productId]!.quantity > 1) {
+    if (_items[id]!.quantity > 1) {
       _items.update(
-        productId,
-        (existingCartItem) => existingCartItem.copyWith(
+        id,
+        (existingCartItem) => CartItem(
+          id: existingCartItem.id,
+          name: existingCartItem.name,
+          price: existingCartItem.price,
+          imageUrl: existingCartItem.imageUrl,
           quantity: existingCartItem.quantity - 1,
         ),
       );
     } else {
-      _items.remove(productId);
+      _items.remove(id);
     }
     notifyListeners();
   }
 
+  void increaseQuantity(String id) {
+    if (!_items.containsKey(id)) return;
+    
+    _items.update(
+      id,
+      (existingCartItem) => CartItem(
+        id: existingCartItem.id,
+        name: existingCartItem.name,
+        price: existingCartItem.price,
+        imageUrl: existingCartItem.imageUrl,
+        quantity: existingCartItem.quantity + 1,
+      ),
+    );
+    notifyListeners();
+  }
+
   void clear() {
-    _items.clear();
+    _items = {};
     notifyListeners();
   }
 } 

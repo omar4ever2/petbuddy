@@ -100,41 +100,77 @@ class SupabaseService with ChangeNotifier {
     try {
       final response = await _client
           .from('products')
-          .select()
+          .select("*")
           .order('created_at', ascending: false);
       
       return List<Map<String, dynamic>>.from(response);
     } catch (e) {
       rethrow;
+    }
+  }
+
+  // Fetch categories from database
+  Future<List<Map<String, dynamic>>> getCategories() async {
+    try {
+      print('Fetching categories from Supabase...');
+      
+      // Use a simpler query first to debug
+      final response = await _client
+          .from('categories')
+          .select('*');
+      
+      print('Categories response raw: $response');
+      
+      if (response == null) {
+        print('Categories response is null');
+        return [];
+      }
+      
+      return List<Map<String, dynamic>>.from(response);
+    } catch (e) {
+      print('Error fetching categories: $e');
+      return [];
+    }
+  }
+
+  // Fetch featured products from database
+  Future<List<Map<String, dynamic>>> getFeaturedProducts() async {
+    try {
+      print('Fetching featured products from Supabase...');
+      
+      // Use a simpler query first to debug
+      final response = await _client
+          .from('products')
+          .select('*')
+          .eq('is_featured', true);
+      
+      print('Featured products response raw: $response');
+      
+      if (response == null) {
+        print('Featured products response is null');
+        return [];
+      }
+      
+      return List<Map<String, dynamic>>.from(response);
+    } catch (e) {
+      print('Error fetching featured products: $e');
+      return [];
     }
   }
 
   // Fetch products by category
-  Future<List<Map<String, dynamic>>> getProductsByCategory(String category) async {
+  Future<List<Map<String, dynamic>>> getProductsByCategory(String categoryId) async {
     try {
       final response = await _client
           .from('products')
-          .select()
-          .eq('category', category)
+          .select('*, categories(name)')
+          .eq('category_id', categoryId)
           .order('created_at', ascending: false);
       
       return List<Map<String, dynamic>>.from(response);
     } catch (e) {
-      rethrow;
-    }
-  }
-
-  // Fetch categories
-  Future<List<Map<String, dynamic>>> getCategories() async {
-    try {
-      final response = await _client
-          .from('categories')
-          .select()
-          .order('name', ascending: true);
-      
-      return List<Map<String, dynamic>>.from(response);
-    } catch (e) {
-      rethrow;
+      print('Error fetching products by category: $e');
+      return [];
     }
   }
 
@@ -233,6 +269,40 @@ class SupabaseService with ChangeNotifier {
       return _client.storage.from('product_images').getPublicUrl(fileName);
     } catch (e) {
       rethrow;
+    }
+  }
+
+  // Debug function to insert test data
+  Future<void> insertTestData() async {
+    try {
+      // Insert test category
+      final categoryResponse = await _client.from('categories').insert([
+        {
+          'name': 'Test Category',
+          'description': 'Test description',
+          'icon_name': 'pets',
+        }
+      ]).select();
+      
+      print('Inserted test category: $categoryResponse');
+      
+      if (categoryResponse != null && categoryResponse.isNotEmpty) {
+        // Insert test product
+        final productResponse = await _client.from('products').insert([
+          {
+            'name': 'Test Product',
+            'description': 'Test product description',
+            'price': 19.99,
+            'stock_quantity': 10,
+            'category_id': categoryResponse[0]['id'],
+            'is_featured': true,
+          }
+        ]).select();
+        
+        print('Inserted test product: $productResponse');
+      }
+    } catch (e) {
+      print('Error inserting test data: $e');
     }
   }
 } 
