@@ -409,7 +409,7 @@ class _HomePageState extends State<HomePage> {
       case 'content_cut':
         return Icons.content_cut;
       case 'front_hand':
-        return Icons.front_hand;
+        return Icons.flutter_dash;
       case 'water':
         return Icons.water;
       case 'home':

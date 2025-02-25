@@ -33,7 +33,7 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
   final List<Map<String, dynamic>> _categories = [
     {'title': 'Dogs', 'icon': Icons.pets},
     {'title': 'Cats', 'icon': Icons.content_cut},
-    {'title': 'Birds', 'icon': Icons.front_hand},
+    {'title': 'Birds', 'icon': Icons.flutter_dash},
     {'title': 'Fish', 'icon': Icons.water},
     {'title': 'Food & Treats', 'icon': Icons.fastfood},
     {'title': 'Accessories', 'icon': Icons.shopping_bag},
