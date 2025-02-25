@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/supabase_service.dart';
-import 'login_screen.dart';
+import '../screens/login_page.dart';
+import '../screens/edit_profile_page.dart';
+import '../screens/orders_page.dart';
+import '../screens/settings_page.dart';
+import '../screens/help_center_page.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -12,301 +16,435 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   bool _isLoading = false;
+  Map<String, dynamic>? _profileData;
 
-  Future<void> _logout() async {
+  @override
+  void initState() {
+    super.initState();
+    _loadProfileData();
+  }
+
+  Future<void> _loadProfileData() async {
     setState(() {
       _isLoading = true;
     });
 
     try {
       final supabaseService = Provider.of<SupabaseService>(context, listen: false);
-      await supabaseService.signOut();
       
-      if (mounted) {
-        Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (_) => const LoginScreen()),
-          (route) => false,
-        );
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error logging out: ${e.toString()}')),
-      );
-    } finally {
-      if (mounted) {
+      if (supabaseService.isAuthenticated) {
+        final profileData = await supabaseService.getUserProfile();
         setState(() {
-          _isLoading = false;
+          _profileData = profileData;
         });
       }
+    } catch (e) {
+      print('Error loading profile data: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to load profile: $e')),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final supabaseService = Provider.of<SupabaseService>(context);
-    final user = supabaseService.currentUser;
-    final email = user?.email ?? 'No email available';
-    final username = user?.userMetadata?['username'] as String? ?? 'Pet Lover';
+    final isLoggedIn = supabaseService.isAuthenticated;
 
     return Scaffold(
+      backgroundColor: Colors.grey[50],
       appBar: AppBar(
         title: const Text('My Profile'),
+        backgroundColor: Colors.white,
+        elevation: 0,
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(height: 20),
-              // Profile picture
-              CircleAvatar(
-                radius: 60,
-                backgroundColor: const Color(0xFF5C6BC0).withOpacity(0.2),
-                child: const Icon(
-                  Icons.person,
-                  size: 60,
-                  color: Color(0xFF5C6BC0),
-                ),
-              ),
-              const SizedBox(height: 16),
-              // Username
-              Text(
-                username,
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 8),
-              // Email
-              Text(
-                email,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey[600],
-                ),
-              ),
-              const SizedBox(height: 32),
-              // Profile sections
-              _buildProfileSection(
-                title: 'Account Information',
-                items: [
-                  ProfileMenuItem(
-                    icon: Icons.person_outline,
-                    title: 'Edit Profile',
-                    onTap: () {
-                      // Navigate to edit profile screen
-                    },
-                  ),
-                  ProfileMenuItem(
-                    icon: Icons.lock_outline,
-                    title: 'Change Password',
-                    onTap: () {
-                      // Navigate to change password screen
-                    },
-                  ),
-                  ProfileMenuItem(
-                    icon: Icons.notifications_outlined,
-                    title: 'Notifications',
-                    onTap: () {
-                      // Navigate to notifications settings
-                    },
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              _buildProfileSection(
-                title: 'Shopping',
-                items: [
-                  ProfileMenuItem(
-                    icon: Icons.shopping_bag_outlined,
-                    title: 'My Orders',
-                    onTap: () {
-                      // Navigate to orders screen
-                    },
-                  ),
-                  ProfileMenuItem(
-                    icon: Icons.favorite_border,
-                    title: 'My Favorites',
-                    onTap: () {
-                      // Navigate to favorites screen
-                    },
-                  ),
-                  ProfileMenuItem(
-                    icon: Icons.location_on_outlined,
-                    title: 'Shipping Addresses',
-                    onTap: () {
-                      // Navigate to addresses screen
-                    },
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              _buildProfileSection(
-                title: 'App Settings',
-                items: [
-                  ProfileMenuItem(
-                    icon: Icons.language,
-                    title: 'Language',
-                    onTap: () {
-                      // Navigate to language settings
-                    },
-                  ),
-                  ProfileMenuItem(
-                    icon: Icons.dark_mode_outlined,
-                    title: 'Dark Mode',
-                    onTap: () {
-                      // Toggle dark mode
-                    },
-                    trailing: Switch(
-                      value: false, // Get from theme provider
-                      onChanged: (value) {
-                        // Update theme
-                      },
-                      activeColor: const Color(0xFF5C6BC0),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              _buildProfileSection(
-                title: 'Support',
-                items: [
-                  ProfileMenuItem(
-                    icon: Icons.help_outline,
-                    title: 'Help Center',
-                    onTap: () {
-                      // Navigate to help center
-                    },
-                  ),
-                  ProfileMenuItem(
-                    icon: Icons.info_outline,
-                    title: 'About Us',
-                    onTap: () {
-                      // Navigate to about screen
-                    },
-                  ),
-                ],
-              ),
-              const SizedBox(height: 32),
-              // Logout button
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _isLoading ? null : _logout,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red.shade50,
-                    foregroundColor: Colors.red,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: _isLoading
-                      ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: Colors.red,
-                          ),
-                        )
-                      : const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.logout),
-                            SizedBox(width: 8),
-                            Text(
-                              'Logout',
-                              style: TextStyle(fontSize: 16),
-                            ),
-                          ],
-                        ),
-                ),
-              ),
-              const SizedBox(height: 32),
-              // App version
-              Text(
-                'Version 1.0.0',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey[500],
-                ),
-              ),
-              const SizedBox(height: 16),
-            ],
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : !isLoggedIn
+              ? _buildLoginPrompt()
+              : _buildProfileContent(),
+    );
+  }
+
+  Widget _buildLoginPrompt() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(
+            Icons.account_circle_outlined,
+            size: 80,
+            color: Color(0xFF5C6BC0),
           ),
+          const SizedBox(height: 16),
+          const Text(
+            'Sign in to access your profile',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 8),
+          const Text(
+            'View orders, manage addresses, and more',
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey,
+            ),
+          ),
+          const SizedBox(height: 24),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginPage()),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF5C6BC0),
+              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+            ),
+            child: const Text('Sign In'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProfileContent() {
+    final username = _profileData?['username'] ?? 'Pet Lover';
+    final email = _profileData?['email'] ?? 'user@example.com';
+    final avatarUrl = _profileData?['avatar_url'];
+    
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Profile header
+          Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  // Avatar
+                  CircleAvatar(
+                    radius: 40,
+                    backgroundColor: const Color(0xFF5C6BC0).withOpacity(0.1),
+                    backgroundImage: avatarUrl != null && avatarUrl.isNotEmpty
+                        ? NetworkImage(avatarUrl)
+                        : null,
+                    child: avatarUrl == null || avatarUrl.isEmpty
+                        ? const Icon(
+                            Icons.person,
+                            size: 40,
+                            color: Color(0xFF5C6BC0),
+                          )
+                        : null,
+                  ),
+                  const SizedBox(width: 16),
+                  
+                  // User info
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          username,
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          email,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[600],
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        OutlinedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const EditProfilePage()),
+                            ).then((_) => _loadProfileData());
+                          },
+                          style: OutlinedButton.styleFrom(
+                            side: const BorderSide(color: Color(0xFF5C6BC0)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          ),
+                          child: const Text(
+                            'Edit Profile',
+                            style: TextStyle(color: Color(0xFF5C6BC0)),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          
+          const SizedBox(height: 24),
+          
+          // Account section
+          _buildSectionTitle('Account'),
+          _buildMenuItems([
+            ProfileMenuItem(
+              icon: Icons.shopping_bag_outlined,
+              title: 'My Orders',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const OrdersPage()),
+                );
+              },
+            ),
+            ProfileMenuItem(
+              icon: Icons.notifications_outlined,
+              title: 'Notifications',
+              trailing: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: const Text(
+                  '3',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                  ),
+                ),
+              ),
+              onTap: () {
+                // Show a temporary message
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Notifications feature coming soon!')),
+                );
+              },
+            ),
+            ProfileMenuItem(
+              icon: Icons.location_on_outlined,
+              title: 'Address Book',
+              onTap: () {
+                // Show a temporary message
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Address Book feature coming soon!')),
+                );
+              },
+            ),
+            ProfileMenuItem(
+              icon: Icons.credit_card_outlined,
+              title: 'Payment Methods',
+              onTap: () {
+                // Show a temporary message
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Payment Methods feature coming soon!')),
+                );
+              },
+            ),
+          ]),
+          
+          const SizedBox(height: 24),
+          
+          // Preferences section
+          _buildSectionTitle('Preferences'),
+          _buildMenuItems([
+            ProfileMenuItem(
+              icon: Icons.settings_outlined,
+              title: 'Settings',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SettingsPage()),
+                );
+              },
+            ),
+            ProfileMenuItem(
+              icon: Icons.help_outline,
+              title: 'Help Center',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HelpCenterPage()),
+                );
+              },
+            ),
+            ProfileMenuItem(
+              icon: Icons.privacy_tip_outlined,
+              title: 'Privacy Policy',
+              onTap: () {
+                _showPrivacyPolicy();
+              },
+            ),
+          ]),
+          
+          const SizedBox(height: 24),
+          
+          // Sign out button
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: _signOut,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text('Sign Out'),
+            ),
+          ),
+          
+          const SizedBox(height: 32),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSectionTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 8, bottom: 8),
+      child: Text(
+        title,
+        style: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: Colors.grey[800],
         ),
       ),
     );
   }
 
-  Widget _buildProfileSection({
-    required String title,
-    required List<ProfileMenuItem> items,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Text(
-            title,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF5C6BC0),
+  Widget _buildMenuItems(List<ProfileMenuItem> items) {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: ListView.separated(
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: items.length,
+        separatorBuilder: (context, index) => const Divider(height: 1),
+        itemBuilder: (context, index) {
+          final item = items[index];
+          return ListTile(
+            leading: Icon(
+              item.icon,
+              color: const Color(0xFF5C6BC0),
             ),
-          ),
-        ),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.1),
-                spreadRadius: 1,
-                blurRadius: 4,
-                offset: const Offset(0, 1),
-              ),
-            ],
-          ),
-          child: ListView.separated(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            itemCount: items.length,
-            separatorBuilder: (context, index) => const Divider(height: 1),
-            itemBuilder: (context, index) => items[index],
-          ),
-        ),
-      ],
+            title: Text(item.title),
+            trailing: item.trailing ?? const Icon(Icons.arrow_forward_ios, size: 16),
+            onTap: item.onTap,
+          );
+        },
+      ),
     );
+  }
+
+  Future<void> _updateProfileSetting(String key, dynamic value) async {
+    try {
+      final supabaseService = Provider.of<SupabaseService>(context, listen: false);
+      await supabaseService.updateUserProfile({key: value});
+      
+      setState(() {
+        if (_profileData != null) {
+          _profileData![key] = value;
+        } else {
+          _profileData = {key: value};
+        }
+      });
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Settings updated')),
+      );
+    } catch (e) {
+      print('Error updating profile setting: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to update setting: $e')),
+      );
+    }
+  }
+
+  void _showPrivacyPolicy() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Privacy Policy'),
+        content: const SingleChildScrollView(
+          child: Text(
+            'This Privacy Policy describes how your personal information is collected, used, and shared when you use our Pet Buddy app.\n\n'
+            'PERSONAL INFORMATION WE COLLECT\n\n'
+            'When you use our app, we collect information that you provide to us such as your name, email address, and profile information.\n\n'
+            'HOW WE USE YOUR PERSONAL INFORMATION\n\n'
+            'We use the information we collect to provide, maintain, and improve our services, including to process transactions, send you related information, and provide customer support.\n\n'
+            'SHARING YOUR PERSONAL INFORMATION\n\n'
+            'We share your Personal Information with service providers to help us provide our services.\n\n'
+            'CHANGES\n\n'
+            'We may update this privacy policy from time to time to reflect changes to our practices or for other operational, legal, or regulatory reasons.\n\n'
+            'CONTACT US\n\n'
+            'For more information about our privacy practices, if you have questions, or if you would like to make a complaint, please contact us by email at privacy@petbuddy.com.',
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Close'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _signOut() async {
+    try {
+      final supabaseService = Provider.of<SupabaseService>(context, listen: false);
+      await supabaseService.signOut();
+      
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Signed out successfully')),
+      );
+      
+      // Navigate back to home page
+      Navigator.pop(context);
+    } catch (e) {
+      print('Error signing out: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to sign out: $e')),
+      );
+    }
   }
 }
 
-class ProfileMenuItem extends StatelessWidget {
+class ProfileMenuItem {
   final IconData icon;
   final String title;
-  final VoidCallback onTap;
   final Widget? trailing;
+  final VoidCallback onTap;
 
-  const ProfileMenuItem({
-    Key? key,
+  ProfileMenuItem({
     required this.icon,
     required this.title,
-    required this.onTap,
     this.trailing,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: Icon(icon, color: const Color(0xFF5C6BC0)),
-      title: Text(title),
-      trailing: trailing ?? const Icon(Icons.arrow_forward_ios, size: 16),
-      onTap: onTap,
-    );
-  }
+    required this.onTap,
+  });
 } 

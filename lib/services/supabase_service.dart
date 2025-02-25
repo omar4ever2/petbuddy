@@ -5,6 +5,7 @@ import 'dart:io' as io;
 class SupabaseService with ChangeNotifier {
   final SupabaseClient _client;
   User? _user;
+  Map<String, dynamic> _userData = {};
 
   SupabaseService(this._client) {
     _init();
@@ -359,6 +360,251 @@ class SupabaseService with ChangeNotifier {
     } catch (e) {
       print('Error fetching adoptable pets by species: $e');
       return [];
+    }
+  }
+
+  // Fetch user orders
+  Future<List<Map<String, dynamic>>> getUserOrders() async {
+    try {
+      if (!isAuthenticated) {
+        return [];
+      }
+      
+      // For demo purposes, we'll return mock data
+      // In a real app, you would fetch from Supabase
+      return [
+        {
+          'id': '12345678-abcd-1234-efgh-123456789012',
+          'created_at': DateTime.now().subtract(const Duration(days: 2)).toIso8601String(),
+          'status': 'Processing',
+          'total_amount': 129.97,
+          'shipping_address': '123 Main St, Apt 4B, New York, NY 10001',
+          'payment_method': 'Credit Card (**** 1234)',
+          'items': [
+            {
+              'name': 'Premium Dog Food',
+              'quantity': 2,
+              'price': 29.99,
+              'image_url': 'https://images.unsplash.com/photo-1589924691995-400dc9ecc119?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+            },
+            {
+              'name': 'Dog Collar - Large',
+              'quantity': 1,
+              'price': 19.99,
+              'image_url': 'https://images.unsplash.com/photo-1567612529009-afe25eb3d0bc?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+            },
+            {
+              'name': 'Interactive Dog Toy',
+              'quantity': 1,
+              'price': 49.99,
+              'image_url': 'https://images.unsplash.com/photo-1576201836106-db1758fd1c97?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+            },
+          ],
+        },
+        {
+          'id': '87654321-dcba-4321-hgfe-210987654321',
+          'created_at': DateTime.now().subtract(const Duration(days: 15)).toIso8601String(),
+          'status': 'Delivered',
+          'total_amount': 89.98,
+          'shipping_address': '123 Main St, Apt 4B, New York, NY 10001',
+          'payment_method': 'PayPal',
+          'items': [
+            {
+              'name': 'Cat Tree Condo',
+              'quantity': 1,
+              'price': 79.99,
+              'image_url': 'https://images.unsplash.com/photo-1592194996308-7b43878e84a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1974&q=80',
+            },
+            {
+              'name': 'Cat Treats',
+              'quantity': 2,
+              'price': 4.99,
+              'image_url': 'https://images.unsplash.com/photo-1583511655826-05700442982d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+            },
+          ],
+        },
+        {
+          'id': '13579246-abcd-2468-efgh-135792468013',
+          'created_at': DateTime.now().subtract(const Duration(days: 30)).toIso8601String(),
+          'status': 'Shipped',
+          'total_amount': 45.98,
+          'shipping_address': '123 Main St, Apt 4B, New York, NY 10001',
+          'payment_method': 'Credit Card (**** 5678)',
+          'items': [
+            {
+              'name': 'Bird Cage - Medium',
+              'quantity': 1,
+              'price': 39.99,
+              'image_url': 'https://images.unsplash.com/photo-1552728089-57bdde30beb3?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+            },
+            {
+              'name': 'Bird Food Mix',
+              'quantity': 1,
+              'price': 5.99,
+              'image_url': 'https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+            },
+          ],
+        },
+      ];
+      
+      // In a real app, you would fetch from Supabase like this:
+      /*
+      final response = await _client
+          .from('orders')
+          .select('*, order_items(*)')
+          .eq('user_id', _user!.id)
+          .order('created_at', ascending: false);
+      
+      return List<Map<String, dynamic>>.from(response);
+      */
+    } catch (e) {
+      print('Error fetching user orders: $e');
+      return [];
+    }
+  }
+
+  // Get user profile data
+  Future<Map<String, dynamic>> getUserProfile() async {
+    try {
+      if (!isAuthenticated) {
+        return {};
+      }
+      
+      // For demo purposes, we'll return mock data
+      // In a real app, you would fetch from Supabase
+      return {
+        'username': _user?.userMetadata?['username'] ?? 'Pet Lover',
+        'full_name': 'John Doe',
+        'email': _user?.email,
+        'phone': '+1 (555) 123-4567',
+        'bio': 'Animal lover and pet enthusiast. I have two dogs and a cat.',
+        'avatar_url': 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1760&q=80',
+        'notification_preferences': {
+          'order_updates': true,
+          'promotions': true,
+          'app_updates': false,
+        },
+        'address': '123 Main St, Apt 4B, New York, NY 10001',
+        'created_at': DateTime.now().subtract(const Duration(days: 120)).toIso8601String(),
+      };
+      
+      // In a real app, you would fetch from Supabase like this:
+      /*
+      final response = await _client
+          .from('profiles')
+          .select('*')
+          .eq('id', _user!.id)
+          .single();
+      
+      return response ?? {};
+      */
+    } catch (e) {
+      print('Error fetching user profile: $e');
+      return {};
+    }
+  }
+
+  // Update user profile
+  Future<void> updateUserProfile(Map<String, dynamic> data) async {
+    try {
+      if (!isAuthenticated) {
+        throw Exception('User not authenticated');
+      }
+      
+      // In a real app, you would update in Supabase like this:
+      /*
+      await _client
+          .from('profiles')
+          .update(data)
+          .eq('id', _user!.id);
+      */
+      
+      // For demo purposes, we'll just print the data
+      print('Updating user profile with data: $data');
+      
+      // Simulate a delay
+      await Future.delayed(const Duration(milliseconds: 800));
+      
+      // Notify listeners that profile data has changed
+      notifyListeners();
+    } catch (e) {
+      print('Error updating user profile: $e');
+      rethrow;
+    }
+  }
+
+  // Upload profile image
+  Future<String> uploadProfileImage(io.File imageFile) async {
+    try {
+      if (!isAuthenticated) {
+        throw Exception('User not authenticated');
+      }
+      
+      // For demo purposes, we'll return a mock URL
+      // In a real app, you would upload to Supabase storage
+      
+      // Simulate a delay
+      await Future.delayed(const Duration(seconds: 1));
+      
+      // Return a random avatar URL
+      final avatarUrls = [
+        'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1760&q=80',
+        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80',
+        'https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80',
+        'https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1961&q=80',
+      ];
+      
+      return avatarUrls[DateTime.now().millisecond % avatarUrls.length];
+      
+      // In a real app, you would upload to Supabase storage like this:
+      /*
+      final fileName = '${_user!.id}_${DateTime.now().millisecondsSinceEpoch}.jpg';
+      final fileBytes = await imageFile.readAsBytes();
+      
+      final response = await _client
+          .storage
+          .from('avatars')
+          .uploadBinary(fileName, fileBytes);
+      
+      if (response.error != null) {
+        throw response.error!;
+      }
+      
+      // Get the public URL
+      final publicUrl = _client
+          .storage
+          .from('avatars')
+          .getPublicUrl(fileName);
+      
+      // Update the user's profile with the new avatar URL
+      await updateUserProfile({'avatar_url': publicUrl});
+      
+      return publicUrl;
+      */
+    } catch (e) {
+      print('Error uploading profile image: $e');
+      rethrow;
+    }
+  }
+
+  /// Refreshes the user data from Supabase
+  Future<void> refreshUserData() async {
+    if (!isAuthenticated) return;
+    
+    try {
+      final userId = _client.auth.currentUser!.id;
+      final response = await _client
+          .from('profiles')
+          .select()
+          .eq('id', userId)
+          .single();
+      
+      // Update any cached user data you might have in the service
+      _userData = response;
+      notifyListeners();
+    } catch (e) {
+      print('Error refreshing user data: $e');
+      rethrow;
     }
   }
 } 
