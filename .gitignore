@@ -83,3 +83,6 @@ coverage/
 # Temporary files
 .temp/
 .tmp/
+
+# Environment variables
+.env

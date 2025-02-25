@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'home_page.dart';
 import 'onboarding_screen.dart';
+import 'package:provider/provider.dart';
+import '../services/supabase_service.dart';
+import 'login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -41,26 +44,49 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     _animationController.forward();
     
     Timer(const Duration(seconds: 3), () {
-      // Check if it's the first launch (in a real app, you'd use SharedPreferences)
-      bool isFirstLaunch = true; // This would be a stored value
+      final supabaseService = Provider.of<SupabaseService>(context, listen: false);
       
-      Navigator.of(context).pushReplacement(
-        PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) => 
-            isFirstLaunch ? const OnboardingScreen() : const HomePage(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            const begin = 0.0;
-            const end = 1.0;
-            const curve = Curves.easeInOut;
-            
-            var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-            var fadeAnimation = animation.drive(tween);
-            
-            return FadeTransition(opacity: fadeAnimation, child: child);
-          },
-          transitionDuration: const Duration(milliseconds: 600),
-        ),
-      );
+      // Check if user is authenticated
+      if (supabaseService.isAuthenticated) {
+        // Navigate to home page
+        Navigator.of(context).pushReplacement(
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) => const HomePage(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              const begin = 0.0;
+              const end = 1.0;
+              const curve = Curves.easeInOut;
+              
+              var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+              var fadeAnimation = animation.drive(tween);
+              
+              return FadeTransition(opacity: fadeAnimation, child: child);
+            },
+            transitionDuration: const Duration(milliseconds: 600),
+          ),
+        );
+      } else {
+        // Check if it's the first launch
+        bool isFirstLaunch = true; // This would be a stored value
+        
+        Navigator.of(context).pushReplacement(
+          PageRouteBuilder(
+            pageBuilder: (context, animation, secondaryAnimation) => 
+              isFirstLaunch ? const OnboardingScreen() : const LoginScreen(),
+            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+              const begin = 0.0;
+              const end = 1.0;
+              const curve = Curves.easeInOut;
+              
+              var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+              var fadeAnimation = animation.drive(tween);
+              
+              return FadeTransition(opacity: fadeAnimation, child: child);
+            },
+            transitionDuration: const Duration(milliseconds: 600),
+          ),
+        );
+      }
     });
   }
 
