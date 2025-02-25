@@ -39,74 +39,100 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     super.dispose();
   }
 
+  void _skipToHomePage() {
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (_) => const HomePage()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Column(
+        child: Stack(
           children: [
-            Expanded(
-              child: PageView.builder(
-                controller: _pageController,
-                itemCount: _onboardingData.length,
-                onPageChanged: (index) {
-                  setState(() {
-                    _currentPage = index;
-                  });
-                },
-                itemBuilder: (context, index) {
-                  return OnboardingPage(
-                    title: _onboardingData[index]['title'],
-                    description: _onboardingData[index]['description'],
-                    icon: _onboardingData[index]['icon'],
-                  );
-                },
+            // Skip button at the top right
+            Positioned(
+              top: 20,
+              right: 20,
+              child: TextButton(
+                onPressed: _skipToHomePage,
+                child: const Text(
+                  'Skip',
+                  style: TextStyle(
+                    color: Color(0xFF5C6BC0),
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: List.generate(
-                      _onboardingData.length,
-                      (index) => buildDot(index),
-                    ),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      if (_currentPage == _onboardingData.length - 1) {
-                        // Navigate to home page
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(builder: (_) => const HomePage()),
-                        );
-                      } else {
-                        // Go to next page
-                        _pageController.nextPage(
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.easeInOut,
-                        );
-                      }
+            
+            Column(
+              children: [
+                const SizedBox(height: 60), // Add space for the skip button
+                Expanded(
+                  child: PageView.builder(
+                    controller: _pageController,
+                    itemCount: _onboardingData.length,
+                    onPageChanged: (index) {
+                      setState(() {
+                        _currentPage = index;
+                      });
                     },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF5C6BC0),
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: Text(
-                      _currentPage == _onboardingData.length - 1 ? 'Get Started' : 'Next',
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    itemBuilder: (context, index) {
+                      return OnboardingPage(
+                        title: _onboardingData[index]['title'],
+                        description: _onboardingData[index]['description'],
+                        icon: _onboardingData[index]['icon'],
+                      );
+                    },
                   ),
-                ],
-              ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: List.generate(
+                          _onboardingData.length,
+                          (index) => buildDot(index),
+                        ),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          if (_currentPage == _onboardingData.length - 1) {
+                            // Navigate to home page
+                            _skipToHomePage();
+                          } else {
+                            // Go to next page
+                            _pageController.nextPage(
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.easeInOut,
+                            );
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF5C6BC0),
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: Text(
+                          _currentPage == _onboardingData.length - 1 ? 'Get Started' : 'Next',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ],
         ),
