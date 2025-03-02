@@ -1,0 +1,15 @@
+<key>UIViewControllerBasedStatusBarAppearance</key>
+<false/>
+<key>CADisableMinimumFrameDurationOnPhone</key>
+<true/>
+<key>UIApplicationSupportsIndirectInputEvents</key>
+<true/>
+
+<!-- Location permissions -->
+<key>NSLocationWhenInUseUsageDescription</key>
+<string>This app needs access to location to track your order.</string>
+<key>NSLocationAlwaysUsageDescription</key>
+<string>This app needs access to location to track your order in the background.</string>
+<key>io.flutter.embedded_views_preview</key>
+<true/>
+</dict> 

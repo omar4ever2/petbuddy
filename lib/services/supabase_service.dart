@@ -910,4 +910,120 @@ class SupabaseService with ChangeNotifier {
       throw Exception('Failed to create order: $e');
     }
   }
+  
+  // Get order tracking information
+  Future<Map<String, dynamic>> getOrderTracking(String orderId) async {
+    try {
+      if (!isAuthenticated) {
+        throw Exception('User not authenticated');
+      }
+      
+      // Instead of fetching from Supabase, return mock data
+      print('Returning mock order tracking data for order ID: $orderId');
+      
+      // Simulate a delay to make it feel like a real API call
+      await Future.delayed(const Duration(milliseconds: 800));
+      
+      // Get current date for relative dates
+      final now = DateTime.now();
+      
+      // Create mock tracking data
+      return {
+        'id': 'tracking_${orderId}',
+        'order_id': orderId,
+        'status': _getRandomStatus(orderId),
+        'estimated_delivery': now.add(const Duration(days: 3)).toIso8601String(),
+        'last_updated': now.subtract(const Duration(hours: 2)).toIso8601String(),
+        'current_location': {
+          'latitude': 40.7128, // New York coordinates
+          'longitude': -74.0060,
+        },
+        'destination_location': {
+          'latitude': 34.0522, // Los Angeles coordinates
+          'longitude': -118.2437,
+        },
+        'updates': [
+          {
+            'timestamp': now.subtract(const Duration(days: 2)).toIso8601String(),
+            'status': 'Order Placed',
+            'description': 'Your order has been received and is being processed.',
+            'location': {
+              'latitude': 40.7128,
+              'longitude': -74.0060,
+            },
+          },
+          {
+            'timestamp': now.subtract(const Duration(days: 1)).toIso8601String(),
+            'status': 'Order Processed',
+            'description': 'Your order has been processed and is ready for shipping.',
+            'location': {
+              'latitude': 40.7128,
+              'longitude': -74.0060,
+            },
+          },
+          {
+            'timestamp': now.subtract(const Duration(hours: 12)).toIso8601String(),
+            'status': 'Shipped',
+            'description': 'Your order has been shipped and is on its way.',
+            'location': {
+              'latitude': 39.9526,
+              'longitude': -75.1652,
+            },
+          },
+          {
+            'timestamp': now.subtract(const Duration(hours: 6)).toIso8601String(),
+            'status': 'In Transit',
+            'description': 'Your order is in transit to the destination.',
+            'location': {
+              'latitude': 39.2904,
+              'longitude': -76.6122,
+            },
+          },
+          {
+            'timestamp': now.subtract(const Duration(hours: 2)).toIso8601String(),
+            'status': 'Out for Delivery',
+            'description': 'Your order is out for delivery and will arrive soon.',
+            'location': {
+              'latitude': 38.9072,
+              'longitude': -77.0369,
+            },
+          },
+        ],
+      };
+      
+      // Original Supabase code (commented out)
+      /*
+      final userId = _client.auth.currentUser!.id;
+      
+      final response = await _client
+          .from('order_tracking')
+          .select('*, tracking_updates(*)')
+          .eq('order_id', orderId)
+          .eq('user_id', userId)
+          .single();
+      
+      return response;
+      */
+    } catch (e) {
+      print('Error getting order tracking: $e');
+      throw Exception('Failed to get order tracking: $e');
+    }
+  }
+  
+  // Helper method to get a random status for demo purposes
+  String _getRandomStatus(String orderId) {
+    // Use the orderId to determine a consistent status
+    final statusOptions = [
+      'processing',
+      'shipped',
+      'out_for_delivery',
+      'delivered',
+    ];
+    
+    // Use the last character of the orderId to pick a status
+    final lastChar = orderId.characters.last;
+    final index = lastChar.codeUnitAt(0) % statusOptions.length;
+    
+    return statusOptions[index];
+  }
 } 

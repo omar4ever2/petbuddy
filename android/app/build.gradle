@@ -42,3 +42,12 @@ android {
 flutter {
     source = "../.."
 }
+
+android {
+    namespace = "com.example.flutter_application_1"
+    compileSdk = 35  // Change this from flutter.compileSdkVersion to 35
+    ndkVersion = flutter.ndkVersion
+    
+    // Rest of the file remains unchanged
+    // ...
+}

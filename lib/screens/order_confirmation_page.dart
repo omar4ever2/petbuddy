@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../screens/home_page.dart';
+import '../screens/order_tracking_page.dart';
 
 class OrderConfirmationPage extends StatelessWidget {
   final Map<String, dynamic> orderData;
@@ -60,7 +61,9 @@ class OrderConfirmationPage extends StatelessWidget {
             _buildOrderDetails(context, dateFormat, orderDate),
             const SizedBox(height: 24),
             _buildOrderItems(),
-            const SizedBox(height: 32),
+            const SizedBox(height: 24),
+            _buildTrackOrderButton(context),
+            const SizedBox(height: 16),
             _buildContinueShoppingButton(context),
           ],
         ),
@@ -227,6 +230,33 @@ class OrderConfirmationPage extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+  
+  Widget _buildTrackOrderButton(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      child: OutlinedButton.icon(
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => OrderTrackingPage(
+                orderId: orderData['id'],
+                orderData: orderData,
+              ),
+            ),
+          );
+        },
+        icon: const Icon(Icons.location_on),
+        label: const Text('Track Order'),
+        style: OutlinedButton.styleFrom(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          side: BorderSide(color: Theme.of(context).primaryColor),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
       ),
     );
   }
