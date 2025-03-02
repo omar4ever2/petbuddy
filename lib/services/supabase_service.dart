@@ -608,4 +608,237 @@ class SupabaseService with ChangeNotifier {
       return false;
     }
   }
+  
+  // Get upcoming vaccine appointments for the current user
+  Future<List<Map<String, dynamic>>> getUpcomingVaccineAppointments() async {
+    try {
+      if (!isAuthenticated) {
+        throw Exception('User not authenticated');
+      }
+      
+      // Instead of fetching from Supabase, return mock data
+      print('Returning mock vaccine appointments data');
+      
+      // Get current date for relative dates
+      final now = DateTime.now();
+      
+      return [
+        {
+          'id': '1',
+          'user_id': _client.auth.currentUser?.id ?? 'user123',
+          'pet_name': 'Max',
+          'pet_type': 'Dog',
+          'appointment_date': now.add(const Duration(days: 3)).toIso8601String(),
+          'vaccine_type': 'Rabies',
+          'status': 'confirmed',
+          'notes': 'Annual vaccination',
+          'created_at': now.subtract(const Duration(days: 2)).toIso8601String(),
+        },
+        {
+          'id': '2',
+          'user_id': _client.auth.currentUser?.id ?? 'user123',
+          'pet_name': 'Bella',
+          'pet_type': 'Cat',
+          'appointment_date': now.add(const Duration(days: 7)).toIso8601String(),
+          'vaccine_type': 'Distemper',
+          'status': 'pending',
+          'notes': 'First time vaccination',
+          'created_at': now.subtract(const Duration(days: 1)).toIso8601String(),
+        },
+        {
+          'id': '3',
+          'user_id': _client.auth.currentUser?.id ?? 'user123',
+          'pet_name': 'Charlie',
+          'pet_type': 'Dog',
+          'appointment_date': now.add(const Duration(days: 14)).toIso8601String(),
+          'vaccine_type': 'Bordetella',
+          'status': 'pending',
+          'notes': 'Required for doggy daycare',
+          'created_at': now.subtract(const Duration(hours: 12)).toIso8601String(),
+        },
+        {
+          'id': '4',
+          'user_id': _client.auth.currentUser?.id ?? 'user123',
+          'pet_name': 'Luna',
+          'pet_type': 'Cat',
+          'appointment_date': now.add(const Duration(days: 21)).toIso8601String(),
+          'vaccine_type': 'Feline Leukemia',
+          'status': 'pending',
+          'notes': null,
+          'created_at': now.subtract(const Duration(hours: 6)).toIso8601String(),
+        },
+        {
+          'id': '5',
+          'user_id': _client.auth.currentUser?.id ?? 'user123',
+          'pet_name': 'Rocky',
+          'pet_type': 'Dog',
+          'appointment_date': now.subtract(const Duration(days: 5)).toIso8601String(),
+          'vaccine_type': 'Parvovirus',
+          'status': 'completed',
+          'notes': 'Booster shot',
+          'created_at': now.subtract(const Duration(days: 15)).toIso8601String(),
+        },
+        {
+          'id': '6',
+          'user_id': _client.auth.currentUser?.id ?? 'user123',
+          'pet_name': 'Daisy',
+          'pet_type': 'Rabbit',
+          'appointment_date': now.subtract(const Duration(days: 2)).toIso8601String(),
+          'vaccine_type': 'Myxomatosis',
+          'status': 'cancelled',
+          'notes': 'Rescheduling needed',
+          'created_at': now.subtract(const Duration(days: 10)).toIso8601String(),
+        },
+      ];
+      
+      // Original Supabase code (commented out)
+      /*
+      final userId = _client.auth.currentUser!.id;
+      final now = DateTime.now().toIso8601String();
+      
+      final response = await _client
+          .from('vaccine_appointments')
+          .select()
+          .eq('user_id', userId)
+          .gte('appointment_date', now)
+          .order('appointment_date', ascending: true)
+          .limit(5);
+      
+      return response;
+      */
+    } catch (e) {
+      print('Error getting upcoming vaccine appointments: $e');
+      return [];
+    }
+  }
+  
+  // Create a new vaccine appointment
+  Future<Map<String, dynamic>> createVaccineAppointment(Map<String, dynamic> appointmentData) async {
+    try {
+      if (!isAuthenticated) {
+        throw Exception('User not authenticated');
+      }
+      
+      // Instead of creating in Supabase, just return mock data
+      print('Creating mock vaccine appointment with data: $appointmentData');
+      
+      final userId = _client.auth.currentUser?.id ?? 'user123';
+      final now = DateTime.now();
+      
+      // Generate a random ID
+      final id = 'appointment_${now.millisecondsSinceEpoch}';
+      
+      // Create a mock response
+      final response = {
+        'id': id,
+        'user_id': userId,
+        'pet_name': appointmentData['pet_name'],
+        'pet_type': appointmentData['pet_type'],
+        'vaccine_type': appointmentData['vaccine_type'],
+        'appointment_date': appointmentData['appointment_date'],
+        'notes': appointmentData['notes'],
+        'status': 'pending',
+        'created_at': now.toIso8601String(),
+      };
+      
+      // Simulate a delay to make it feel like a real API call
+      await Future.delayed(const Duration(milliseconds: 800));
+      
+      return response;
+      
+      // Original Supabase code (commented out)
+      /*
+      final userId = _client.auth.currentUser!.id;
+      
+      final data = {
+        'user_id': userId,
+        'created_at': DateTime.now().toIso8601String(),
+        'status': 'pending',
+        ...appointmentData,
+      };
+      
+      final response = await _client
+          .from('vaccine_appointments')
+          .insert(data)
+          .select()
+          .single();
+      
+      return response;
+      */
+    } catch (e) {
+      print('Error creating vaccine appointment: $e');
+      throw Exception('Failed to create vaccine appointment: $e');
+    }
+  }
+  
+  // Cancel a vaccine appointment
+  Future<void> cancelVaccineAppointment(String appointmentId) async {
+    try {
+      if (!isAuthenticated) {
+        throw Exception('User not authenticated');
+      }
+      
+      // Instead of updating in Supabase, just log the cancellation
+      print('Cancelling mock vaccine appointment with ID: $appointmentId');
+      
+      // Simulate a delay to make it feel like a real API call
+      await Future.delayed(const Duration(milliseconds: 600));
+      
+      // Original Supabase code (commented out)
+      /*
+      final userId = _client.auth.currentUser!.id;
+      
+      await _client
+          .from('vaccine_appointments')
+          .update({'status': 'cancelled'})
+          .eq('id', appointmentId)
+          .eq('user_id', userId);
+      */
+    } catch (e) {
+      print('Error cancelling vaccine appointment: $e');
+      throw Exception('Failed to cancel vaccine appointment: $e');
+    }
+  }
+  
+  // Get available vaccine types
+  Future<List<Map<String, dynamic>>> getVaccineTypes() async {
+    try {
+      // Return predefined vaccine types instead of fetching from Supabase
+      print('Returning predefined vaccine types');
+      
+      // Simulate a delay to make it feel like a real API call
+      await Future.delayed(const Duration(milliseconds: 300));
+      
+      return [
+        {'id': '1', 'name': 'Rabies', 'description': 'Protection against rabies virus'},
+        {'id': '2', 'name': 'Distemper', 'description': 'Protection against canine distemper'},
+        {'id': '3', 'name': 'Parvovirus', 'description': 'Protection against parvovirus'},
+        {'id': '4', 'name': 'Bordetella', 'description': 'Protection against kennel cough'},
+        {'id': '5', 'name': 'Leptospirosis', 'description': 'Protection against leptospirosis'},
+        {'id': '6', 'name': 'Feline Leukemia', 'description': 'Protection for cats against feline leukemia virus'},
+        {'id': '7', 'name': 'Feline Calicivirus', 'description': 'Protection for cats against calicivirus'},
+        {'id': '8', 'name': 'Avian Influenza', 'description': 'Protection for birds against avian flu'},
+      ];
+      
+      // Original Supabase code (commented out)
+      /*
+      final response = await _client
+          .from('vaccine_types')
+          .select()
+          .order('name', ascending: true);
+      
+      return response;
+      */
+    } catch (e) {
+      print('Error getting vaccine types: $e');
+      // Return some default vaccine types if there's an error
+      return [
+        {'id': '1', 'name': 'Rabies', 'description': 'Protection against rabies virus'},
+        {'id': '2', 'name': 'Distemper', 'description': 'Protection against canine distemper'},
+        {'id': '3', 'name': 'Parvovirus', 'description': 'Protection against parvovirus'},
+        {'id': '4', 'name': 'Bordetella', 'description': 'Protection against kennel cough'},
+        {'id': '5', 'name': 'Leptospirosis', 'description': 'Protection against leptospirosis'},
+      ];
+    }
+  }
 } 

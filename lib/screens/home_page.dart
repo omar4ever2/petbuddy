@@ -12,6 +12,8 @@ import '../screens/profile_page.dart';
 import '../screens/adoptions_page.dart';
 import '../models/adoptable_pet.dart';
 import '../widgets/adoptable_pet_card.dart';
+import '../widgets/vaccine_section.dart';
+import '../screens/vaccine_booking_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -133,6 +135,8 @@ class _HomePageState extends State<HomePage> {
                                   _buildCategories(),
                                   const SizedBox(height: 24),
                                   _buildFeaturedProducts(),
+                                  const SizedBox(height: 24),
+                                  const VaccineSection(),
                                   const SizedBox(height: 24),
                                   _buildAdoptablePetsSection(),
                                 ],
@@ -612,14 +616,14 @@ class _HomePageState extends State<HomePage> {
                 label: 'Categories',
               ),
               BottomNavigationBarItem(
+                icon: Icon(Icons.vaccines_outlined),
+                activeIcon: Icon(Icons.vaccines),
+                label: 'Vaccines',
+              ),
+              BottomNavigationBarItem(
                 icon: Icon(Icons.pets_outlined),
                 activeIcon: Icon(Icons.pets),
                 label: 'Adoptions',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(Icons.favorite_outline),
-                activeIcon: Icon(Icons.favorite),
-                label: 'Favorites',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.person_outline),
@@ -639,13 +643,13 @@ class _HomePageState extends State<HomePage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const AdoptionsPage()),
+                      builder: (context) => const VaccineBookingPage()),
                 );
               } else if (index == 3) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const FavoritesPage()),
+                      builder: (context) => const AdoptionsPage()),
                 );
               } else if (index == 4) {
                 Navigator.push(
