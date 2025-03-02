@@ -462,37 +462,41 @@ class SupabaseService with ChangeNotifier {
   Future<Map<String, dynamic>> getUserProfile() async {
     try {
       if (!isAuthenticated) {
-        return {};
+        throw Exception('User not authenticated');
       }
       
-      // For demo purposes, we'll return mock data
-      // In a real app, you would fetch from Supabase
-      // return {
-      //   'username': _user?.userMetadata?['username'] ?? 'Pet Lover',
-      //   'full_name': _user?.userMetadata?['full_name'] ?? 'Pet Lover',
-      //   'email': _user?.email ?? 'petlover@example.com',
-      //   'phone': _user?.phone ?? '+1 (555) 123-4567',
-      //   'bio': _user?.userMetadata?['bio'] ?? 'Animal lover and pet enthusiast. I have two dogs and a cat.',
-      //   'avatar_url': _user?.userMetadata?['avatar_url'] ?? 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1760&q=80',
-      //   'notification_preferences': {
-      //     'order_updates': true,
-      //     'promotions': true,
-      //     'app_updates': false,
-      //   },
-      //   'address': '123 Main St, Apt 4B, New York, NY 10001',
-      //   'created_at': DateTime.now().subtract(const Duration(days: 120)).toIso8601String(),
-      // };
+      // Instead of fetching from Supabase, return mock data
+      print('Returning mock user profile data');
       
-      // In a real app, you would fetch from Supabase like this:
+      // Simulate a delay to make it feel like a real API call
+      await Future.delayed(const Duration(milliseconds: 500));
+      
+      return {
+        'id': _client.auth.currentUser?.id ?? 'user123',
+        'full_name': 'John Doe',
+        'email': 'john.doe@example.com',
+        'phone': '(555) 123-4567',
+        'address': '123 Main Street',
+        'city': 'New York',
+        'state': 'NY',
+        'zip': '10001',
+        'created_at': DateTime.now().subtract(const Duration(days: 30)).toIso8601String(),
+      };
+      
+      // Original Supabase code (commented out)
+      /*
+      final userId = _client.auth.currentUser!.id;
+      
       final response = await _client
-          .from('user_profiles')
-          .select('*')
-          .eq('id', _user!.id)
+          .from('profiles')
+          .select()
+          .eq('id', userId)
           .single();
       
-      return response ?? {};
+      return response;
+      */
     } catch (e) {
-      print('Error fetching user profile: $e');
+      print('Error getting user profile: $e');
       return {};
     }
   }
@@ -839,6 +843,71 @@ class SupabaseService with ChangeNotifier {
         {'id': '4', 'name': 'Bordetella', 'description': 'Protection against kennel cough'},
         {'id': '5', 'name': 'Leptospirosis', 'description': 'Protection against leptospirosis'},
       ];
+    }
+  }
+
+  // Create a new order
+  Future<Map<String, dynamic>> createOrder(Map<String, dynamic> orderData) async {
+    try {
+      if (!isAuthenticated) {
+        throw Exception('User not authenticated');
+      }
+      
+      // Instead of creating in Supabase, just return the data with an ID
+      print('Creating mock order with data: $orderData');
+      
+      // Simulate a delay to make it feel like a real API call
+      await Future.delayed(const Duration(seconds: 1));
+      
+      // Add user ID if not present
+      if (!orderData.containsKey('user_id')) {
+        orderData['user_id'] = _client.auth.currentUser?.id ?? 'user123';
+      }
+      
+      // Add created_at if not present
+      if (!orderData.containsKey('created_at')) {
+        orderData['created_at'] = DateTime.now().toIso8601String();
+      }
+      
+      // Add order ID if not present
+      if (!orderData.containsKey('id')) {
+        orderData['id'] = 'order_${DateTime.now().millisecondsSinceEpoch}';
+      }
+      
+      return orderData;
+      
+      // Original Supabase code (commented out)
+      /*
+      final userId = _client.auth.currentUser!.id;
+      
+      // Add user ID to order data
+      orderData['user_id'] = userId;
+      
+      // Add created_at timestamp
+      orderData['created_at'] = DateTime.now().toIso8601String();
+      
+      // Insert order into orders table
+      final orderResponse = await _client
+          .from('orders')
+          .insert(orderData)
+          .select()
+          .single();
+      
+      // Get order ID
+      final orderId = orderResponse['id'];
+      
+      // Insert order items
+      final items = orderData['items'] as List;
+      for (var item in items) {
+        item['order_id'] = orderId;
+        await _client.from('order_items').insert(item);
+      }
+      
+      return orderResponse;
+      */
+    } catch (e) {
+      print('Error creating order: $e');
+      throw Exception('Failed to create order: $e');
     }
   }
 } 
