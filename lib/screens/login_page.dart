@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/supabase_service.dart';
+import '../screens/profile_setup_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -44,8 +45,10 @@ class _LoginPageState extends State<LoginPage> {
         );
         
         if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Account created successfully! Please check your email to confirm.')),
+          // Navigate to profile setup page after signup
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const ProfileSetupPage()),
           );
         }
       } else {
@@ -55,7 +58,18 @@ class _LoginPageState extends State<LoginPage> {
         );
         
         if (mounted) {
-          Navigator.pop(context);
+          // Check if user has a profile
+          final hasProfile = await supabaseService.checkUserHasProfile();
+          
+          if (hasProfile) {
+            Navigator.pop(context);
+          } else {
+            // Navigate to profile setup if no profile exists
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const ProfileSetupPage()),
+            );
+          }
         }
       }
     } catch (e) {

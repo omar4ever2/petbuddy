@@ -19,7 +19,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _bioController = TextEditingController();
   
   File? _imageFile;
   String? _currentAvatarUrl;
@@ -35,7 +34,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
     _usernameController.dispose();
     _fullNameController.dispose();
     _phoneController.dispose();
-    _bioController.dispose();
     super.dispose();
   }
 
@@ -53,8 +51,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         if (profileData != null) {
           _usernameController.text = profileData['username'] ?? '';
           _fullNameController.text = profileData['full_name'] ?? '';
-          _phoneController.text = profileData['phone'] ?? '';
-          _bioController.text = profileData['bio'] ?? '';
+          _phoneController.text = profileData['phone_number'] ?? '';
           _currentAvatarUrl = profileData['avatar_url'];
         }
       }
@@ -108,8 +105,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       final profileData = {
         'username': _usernameController.text,
         'full_name': _fullNameController.text,
-        'phone': _phoneController.text,
-        'bio': _bioController.text,
+        'phone_number': _phoneController.text,
         'avatar_url': avatarUrl,
       };
       
@@ -273,18 +269,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     ),
                     
                     const SizedBox(height: 16),
-                    
-                    // Bio
-                    TextFormField(
-                      controller: _bioController,
-                      decoration: const InputDecoration(
-                        labelText: 'Bio',
-                        border: OutlineInputBorder(),
-                        prefixIcon: Icon(Icons.info_outline),
-                        alignLabelWithHint: true,
-                      ),
-                      maxLines: 3,
-                    ),
                   ],
                 ),
               ),

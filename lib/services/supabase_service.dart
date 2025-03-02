@@ -113,23 +113,19 @@ class SupabaseService with ChangeNotifier {
   // Fetch categories from database
   Future<List<Map<String, dynamic>>> getCategories() async {
     try {
-      print('Fetching categories from Supabase...');
       
       // Use a simpler query first to debug
       final response = await _client
           .from('categories')
           .select('*');
       
-      print('Categories response raw: $response');
       
       if (response == null) {
-        print('Categories response is null');
         return [];
       }
       
       return List<Map<String, dynamic>>.from(response);
     } catch (e) {
-      print('Error fetching categories: $e');
       return [];
     }
   }
@@ -170,7 +166,6 @@ class SupabaseService with ChangeNotifier {
       
       return List<Map<String, dynamic>>.from(response);
     } catch (e) {
-      print('Error fetching products by category: $e');
       return [];
     }
   }
@@ -472,32 +467,30 @@ class SupabaseService with ChangeNotifier {
       
       // For demo purposes, we'll return mock data
       // In a real app, you would fetch from Supabase
-      return {
-        'username': _user?.userMetadata?['username'] ?? 'Pet Lover',
-        'full_name': 'John Doe',
-        'email': _user?.email,
-        'phone': '+1 (555) 123-4567',
-        'bio': 'Animal lover and pet enthusiast. I have two dogs and a cat.',
-        'avatar_url': 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1760&q=80',
-        'notification_preferences': {
-          'order_updates': true,
-          'promotions': true,
-          'app_updates': false,
-        },
-        'address': '123 Main St, Apt 4B, New York, NY 10001',
-        'created_at': DateTime.now().subtract(const Duration(days: 120)).toIso8601String(),
-      };
+      // return {
+      //   'username': _user?.userMetadata?['username'] ?? 'Pet Lover',
+      //   'full_name': _user?.userMetadata?['full_name'] ?? 'Pet Lover',
+      //   'email': _user?.email ?? 'petlover@example.com',
+      //   'phone': _user?.phone ?? '+1 (555) 123-4567',
+      //   'bio': _user?.userMetadata?['bio'] ?? 'Animal lover and pet enthusiast. I have two dogs and a cat.',
+      //   'avatar_url': _user?.userMetadata?['avatar_url'] ?? 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1760&q=80',
+      //   'notification_preferences': {
+      //     'order_updates': true,
+      //     'promotions': true,
+      //     'app_updates': false,
+      //   },
+      //   'address': '123 Main St, Apt 4B, New York, NY 10001',
+      //   'created_at': DateTime.now().subtract(const Duration(days: 120)).toIso8601String(),
+      // };
       
       // In a real app, you would fetch from Supabase like this:
-      /*
       final response = await _client
-          .from('profiles')
+          .from('user_profiles')
           .select('*')
           .eq('id', _user!.id)
           .single();
       
       return response ?? {};
-      */
     } catch (e) {
       print('Error fetching user profile: $e');
       return {};
@@ -512,18 +505,13 @@ class SupabaseService with ChangeNotifier {
       }
       
       // In a real app, you would update in Supabase like this:
-      /*
       await _client
-          .from('profiles')
+          .from('user_profiles')
           .update(data)
           .eq('id', _user!.id);
-      */
       
       // For demo purposes, we'll just print the data
       print('Updating user profile with data: $data');
-      
-      // Simulate a delay
-      await Future.delayed(const Duration(milliseconds: 800));
       
       // Notify listeners that profile data has changed
       notifyListeners();
@@ -536,54 +524,18 @@ class SupabaseService with ChangeNotifier {
   // Upload profile image
   Future<String> uploadProfileImage(io.File imageFile) async {
     try {
-      if (!isAuthenticated) {
-        throw Exception('User not authenticated');
-      }
+      final fileName = '${_client.auth.currentUser!.id}_${DateTime.now().millisecondsSinceEpoch}.jpg';
       
-      // For demo purposes, we'll return a mock URL
-      // In a real app, you would upload to Supabase storage
-      
-      // Simulate a delay
-      await Future.delayed(const Duration(seconds: 1));
-      
-      // Return a random avatar URL
-      final avatarUrls = [
-        'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1760&q=80',
-        'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80',
-        'https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80',
-        'https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1961&q=80',
-      ];
-      
-      return avatarUrls[DateTime.now().millisecond % avatarUrls.length];
-      
-      // In a real app, you would upload to Supabase storage like this:
-      /*
-      final fileName = '${_user!.id}_${DateTime.now().millisecondsSinceEpoch}.jpg';
-      final fileBytes = await imageFile.readAsBytes();
-      
-      final response = await _client
-          .storage
-          .from('avatars')
-          .uploadBinary(fileName, fileBytes);
-      
-      if (response.error != null) {
-        throw response.error!;
-      }
-      
-      // Get the public URL
-      final publicUrl = _client
+      // Get public URL for the uploaded image
+      final imageUrl = _client
           .storage
           .from('avatars')
           .getPublicUrl(fileName);
       
-      // Update the user's profile with the new avatar URL
-      await updateUserProfile({'avatar_url': publicUrl});
-      
-      return publicUrl;
-      */
+      return imageUrl;
     } catch (e) {
       print('Error uploading profile image: $e');
-      rethrow;
+      throw Exception('Failed to upload profile image: $e');
     }
   }
 
@@ -594,7 +546,7 @@ class SupabaseService with ChangeNotifier {
     try {
       final userId = _client.auth.currentUser!.id;
       final response = await _client
-          .from('profiles')
+          .from('user_profiles')
           .select()
           .eq('id', userId)
           .single();
@@ -605,6 +557,55 @@ class SupabaseService with ChangeNotifier {
     } catch (e) {
       print('Error refreshing user data: $e');
       rethrow;
+    }
+  }
+
+  Future<void> createUserProfile(Map<String, dynamic> profileData) async {
+    try {
+      final userId = _client.auth.currentUser!.id;
+      
+      // Check if profile already exists
+      final existingProfile = await _client
+          .from('user_profiles')
+          .select()
+          .eq('id', userId)
+          .maybeSingle();
+      
+      if (existingProfile != null) {
+        // Update existing profile
+        await _client
+            .from('user_profiles')
+            .update(profileData)
+            .eq('id', userId);
+      } else {
+        // Create new profile
+        await _client
+            .from('user_profiles')
+            .insert({
+              'id': userId,
+              ...profileData,
+            });
+      }
+    } catch (e) {
+      print('Error creating user profile: $e');
+      throw Exception('Failed to create user profile: $e');
+    }
+  }
+
+  Future<bool> checkUserHasProfile() async {
+    try {
+      final userId = _client.auth.currentUser!.id;
+      
+      final profile = await _client
+          .from('user_profiles')
+          .select()
+          .eq('id', userId)
+          .maybeSingle();
+      
+      return profile != null;
+    } catch (e) {
+      print('Error checking user profile: $e');
+      return false;
     }
   }
 } 

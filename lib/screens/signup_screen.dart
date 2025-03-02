@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/supabase_service.dart';
 import 'home_page.dart';
+import 'profile_setup_page.dart';
 
 class SignupScreen extends StatefulWidget {
   const SignupScreen({Key? key}) : super(key: key);
@@ -47,7 +48,7 @@ class _SignupScreenState extends State<SignupScreen> {
       
       if (mounted) {
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const HomePage()),
+          MaterialPageRoute(builder: (_) => const ProfileSetupPage()),
         );
       }
     } catch (e) {

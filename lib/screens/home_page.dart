@@ -39,26 +39,27 @@ class _HomePageState extends State<HomePage> {
     });
 
     try {
-      final supabaseService = Provider.of<SupabaseService>(context, listen: false);
-      
+      final supabaseService =
+          Provider.of<SupabaseService>(context, listen: false);
+
       // Debug print to check if service is available
       print('Fetching categories and products from Supabase...');
-      
+
       final categories = await supabaseService.getCategories();
       print('Categories fetched: ${categories.length}');
-      
+
       final featuredProducts = await supabaseService.getFeaturedProducts();
       print('Featured products fetched: ${featuredProducts.length}');
-      
+
       // Debug print to see what data we got
       if (categories.isNotEmpty) {
         print('First category: ${categories[0]}');
       }
-      
+
       if (featuredProducts.isNotEmpty) {
         print('First product: ${featuredProducts[0]}');
       }
-      
+
       setState(() {
         _categories = categories;
         _featuredProducts = featuredProducts;
@@ -103,7 +104,8 @@ class _HomePageState extends State<HomePage> {
                               ),
                               const SizedBox(height: 8),
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 32),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 32),
                                 child: Text(
                                   _errorMessage!,
                                   textAlign: TextAlign.center,
@@ -148,7 +150,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildAppBar(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
-    
+
     return Container(
       padding: const EdgeInsets.all(16),
       child: Row(
@@ -208,7 +210,8 @@ class _HomePageState extends State<HomePage> {
               alignment: Alignment.topRight,
               children: [
                 IconButton(
-                  icon: const Icon(Icons.shopping_cart, color: Color(0xFF5C6BC0)),
+                  icon:
+                      const Icon(Icons.shopping_cart, color: Color(0xFF5C6BC0)),
                   onPressed: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
@@ -247,8 +250,10 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildWelcomeSection(BuildContext context) {
     final supabaseService = Provider.of<SupabaseService>(context);
-    final username = supabaseService.currentUser?.userMetadata?['username'] as String? ?? 'Pet Lover';
-    
+    final username =
+        supabaseService.currentUser?.userMetadata?['username'] as String? ??
+            'Pet Lover';
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
       decoration: BoxDecoration(
@@ -297,7 +302,8 @@ class _HomePageState extends State<HomePage> {
             ),
             child: Row(
               children: [
-                const Icon(Icons.local_offer_outlined, color: Color(0xFF5C6BC0)),
+                const Icon(Icons.local_offer_outlined,
+                    color: Color(0xFF5C6BC0)),
                 const SizedBox(width: 8),
                 const Text(
                   'Use code PETLOVE for 15% off',
@@ -307,7 +313,8 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 const Spacer(),
-                const Icon(Icons.arrow_forward_ios, size: 14, color: Color(0xFF5C6BC0)),
+                const Icon(Icons.arrow_forward_ios,
+                    size: 14, color: Color(0xFF5C6BC0)),
               ],
             ),
           ),
@@ -334,7 +341,8 @@ class _HomePageState extends State<HomePage> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const CategoriesPage()),
+                  MaterialPageRoute(
+                      builder: (context) => const CategoriesPage()),
                 );
               },
               icon: const Text(
@@ -504,7 +512,8 @@ class _HomePageState extends State<HomePage> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const AdoptionsPage()),
+                  MaterialPageRoute(
+                      builder: (context) => const AdoptionsPage()),
                 );
               },
               child: const Text(
@@ -548,7 +557,7 @@ class _HomePageState extends State<HomePage> {
               final pets = snapshot.data!
                   .map((data) => AdoptablePet.fromJson(data))
                   .toList();
-              
+
               return SizedBox(
                 height: 190,
                 child: ListView.builder(
@@ -623,17 +632,20 @@ class _HomePageState extends State<HomePage> {
               if (index == 1) {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const CategoriesPage()),
+                  MaterialPageRoute(
+                      builder: (context) => const CategoriesPage()),
                 );
               } else if (index == 2) {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const AdoptionsPage()),
+                  MaterialPageRoute(
+                      builder: (context) => const AdoptionsPage()),
                 );
               } else if (index == 3) {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const FavoritesPage()),
+                  MaterialPageRoute(
+                      builder: (context) => const FavoritesPage()),
                 );
               } else if (index == 4) {
                 Navigator.push(
