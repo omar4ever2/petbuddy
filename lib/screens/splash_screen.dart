@@ -109,7 +109,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [Color(0xFF5C6BC0), Color(0xFF3949AB)],
+            colors: [Color.fromARGB(255, 40, 108, 100), Color.fromARGB(255, 40, 108, 100)],
           ),
         ),
         child: Center(
@@ -142,7 +142,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                           child: Icon(
                             Icons.pets,
                             size: 70,
-                            color: const Color(0xFF5C6BC0),
+                            color: const Color.fromARGB(255, 40, 108, 100),
                           ),
                         ),
                       ),

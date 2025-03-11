@@ -5,6 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'screens/splash_screen.dart';
 import 'providers/cart_provider.dart';
 import 'providers/favorites_provider.dart';
+import 'providers/theme_provider.dart';
 import 'services/supabase_service.dart';
 
 Future<void> main() async {
@@ -34,22 +35,16 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (ctx) => CartProvider()),
         ChangeNotifierProvider(create: (ctx) => FavoritesProvider()),
         ChangeNotifierProvider(create: (ctx) => SupabaseService(supabase)),
+        ChangeNotifierProvider(create: (ctx) => ThemeProvider()),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color(0xFF5C6BC0),
-            brightness: Brightness.light,
-          ),
-          fontFamily: 'Poppins',
-          appBarTheme: const AppBarTheme(
-            elevation: 0,
-            backgroundColor: Colors.transparent,
-          ),
-        ),
-        home: const SplashScreen(),
+      child: Consumer<ThemeProvider>(
+        builder: (context, themeProvider, _) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: themeProvider.currentTheme,
+            home: const SplashScreen(),
+          );
+        },
       ),
     );
   }

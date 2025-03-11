@@ -10,6 +10,8 @@ class VaccineSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Color themeColor = const Color.fromARGB(255, 40, 108, 100);
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -32,40 +34,40 @@ class VaccineSection extends StatelessWidget {
                   ),
                 );
               },
-              icon: const Text(
+              icon: Text(
                 'See All',
                 style: TextStyle(
                   fontSize: 14,
-                  color: Color(0xFF5C6BC0),
+                  color: themeColor,
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              label: const Icon(
+              label: Icon(
                 Icons.arrow_forward_ios,
                 size: 12,
-                color: Color(0xFF5C6BC0),
+                color: themeColor,
               ),
             ),
           ],
         ),
         const SizedBox(height: 16),
-        _buildVaccineCard(context),
+        _buildVaccineCard(context, themeColor),
       ],
     );
   }
 
-  Widget _buildVaccineCard(BuildContext context) {
+  Widget _buildVaccineCard(BuildContext context, Color themeColor) {
     return Container(
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF5C6BC0), Color(0xFF3949AB)],
+        gradient: LinearGradient(
+          colors: [themeColor, themeColor.withOpacity(0.8)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
+            color: themeColor.withOpacity(0.3),
             spreadRadius: 1,
             blurRadius: 6,
             offset: const Offset(0, 3),
@@ -143,11 +145,11 @@ class VaccineSection extends StatelessWidget {
                   bottomRight: Radius.circular(16),
                 ),
               ),
-              child: const Center(
+              child: Center(
                 child: Text(
                   'Book an Appointment',
                   style: TextStyle(
-                    color: Color(0xFF5C6BC0),
+                    color: themeColor,
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                   ),

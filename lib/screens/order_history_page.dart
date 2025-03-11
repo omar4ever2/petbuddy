@@ -103,13 +103,13 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
           Container(
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
-              color: const Color(0xFF5C6BC0).withOpacity(0.1),
+              color: const Color.fromARGB(255, 40, 108, 100).withOpacity(0.1),
               shape: BoxShape.circle,
             ),
             child: const Icon(
               Icons.shopping_bag_outlined,
               size: 80,
-              color: Color(0xFF5C6BC0),
+              color: const Color.fromARGB(255, 40, 108, 100),
             ),
           ),
           const SizedBox(height: 20),
@@ -135,7 +135,7 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
               Navigator.of(context).pop();
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Theme.of(context).primaryColor,
+              backgroundColor: const Color.fromARGB(255, 40, 108, 100),
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               shape: RoundedRectangleBorder(
@@ -334,7 +334,7 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                     icon: const Icon(Icons.location_on, size: 16),
                     label: const Text('Track'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).primaryColor,
+                      backgroundColor: const Color.fromARGB(255, 40, 108, 100),
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       shape: RoundedRectangleBorder(
@@ -425,7 +425,7 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: Theme.of(context).primaryColor,
+                            color: const Color.fromARGB(255, 40, 108, 100),
                           ),
                         ),
                       ],
@@ -448,7 +448,7 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                         icon: const Icon(Icons.location_on),
                         label: const Text('Track Order'),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Theme.of(context).primaryColor,
+                          backgroundColor: const Color.fromARGB(255, 40, 108, 100),
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(

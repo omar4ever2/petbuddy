@@ -28,6 +28,9 @@ class _HomePageState extends State<HomePage> {
   List<Map<String, dynamic>> _featuredProducts = [];
   String? _errorMessage;
 
+  // Define the theme color
+  final Color themeColor = const Color.fromARGB(255, 40, 108, 100);
+
   @override
   void initState() {
     super.initState();
@@ -86,50 +89,73 @@ class _HomePageState extends State<HomePage> {
             _buildAppBar(context),
             Expanded(
               child: _isLoading
-                  ? const Center(
-                      child: CircularProgressIndicator(),
+                  ? Center(
+                      child: CircularProgressIndicator(
+                        color: themeColor,
+                      ),
                     )
                   : _errorMessage != null
                       ? Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Icon(
+                              Icon(
                                 Icons.error_outline,
-                                color: Colors.red,
-                                size: 60,
+                                color: Colors.red[400],
+                                size: 70,
                               ),
                               const SizedBox(height: 16),
                               Text(
                                 'Something went wrong',
-                                style: Theme.of(context).textTheme.titleLarge,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleLarge
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                    ),
                               ),
-                              const SizedBox(height: 8),
+                              const SizedBox(height: 12),
                               Padding(
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 32),
                                 child: Text(
                                   _errorMessage!,
                                   textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.grey[700],
+                                  ),
                                 ),
                               ),
-                              const SizedBox(height: 16),
-                              ElevatedButton(
+                              const SizedBox(height: 24),
+                              ElevatedButton.icon(
                                 onPressed: _loadData,
-                                child: const Text('Try Again'),
+                                icon: const Icon(Icons.refresh),
+                                label: const Text('Try Again'),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: themeColor,
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 24, vertical: 12),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
                               ),
                             ],
                           ),
                         )
                       : RefreshIndicator(
+                          color: themeColor,
                           onRefresh: _loadData,
                           child: SingleChildScrollView(
                             physics: const AlwaysScrollableScrollPhysics(),
                             child: Padding(
-                              padding: const EdgeInsets.all(16.0),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16.0),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  const SizedBox(height: 8),
                                   _buildWelcomeSection(context),
                                   const SizedBox(height: 24),
                                   _buildCategories(),
@@ -139,6 +165,7 @@ class _HomePageState extends State<HomePage> {
                                   const VaccineSection(),
                                   const SizedBox(height: 24),
                                   _buildAdoptablePetsSection(),
+                                  const SizedBox(height: 16),
                                 ],
                               ),
                             ),
@@ -156,7 +183,18 @@ class _HomePageState extends State<HomePage> {
     final cartProvider = Provider.of<CartProvider>(context);
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.05),
+            spreadRadius: 1,
+            blurRadius: 5,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
       child: Row(
         children: [
           Expanded(
@@ -169,26 +207,19 @@ class _HomePageState extends State<HomePage> {
               },
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.1),
-                      spreadRadius: 1,
-                      blurRadius: 4,
-                      offset: const Offset(0, 1),
-                    ),
-                  ],
+                  color: Colors.grey[100],
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   child: Row(
                     children: [
-                      Icon(Icons.search, color: Colors.grey),
-                      SizedBox(width: 8),
+                      Icon(Icons.search, color: Colors.grey[600], size: 20),
+                      const SizedBox(width: 10),
                       Text(
                         'Search for pets and supplies...',
-                        style: TextStyle(color: Colors.grey, fontSize: 14),
+                        style: TextStyle(color: Colors.grey[600], fontSize: 14),
                       ),
                     ],
                   ),
@@ -196,26 +227,21 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          const SizedBox(width: 16),
+          const SizedBox(width: 12),
           Container(
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.1),
-                  spreadRadius: 1,
-                  blurRadius: 4,
-                  offset: const Offset(0, 1),
-                ),
-              ],
+              color: themeColor.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
             ),
             child: Stack(
               alignment: Alignment.topRight,
               children: [
                 IconButton(
-                  icon:
-                      const Icon(Icons.shopping_cart, color: Color(0xFF5C6BC0)),
+                  icon: Icon(
+                    Icons.shopping_cart_outlined,
+                    color: themeColor,
+                    size: 24,
+                  ),
                   onPressed: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
@@ -226,13 +252,17 @@ class _HomePageState extends State<HomePage> {
                 ),
                 if (cartProvider.itemCount > 0)
                   Positioned(
-                    right: 8,
-                    top: 8,
+                    right: 6,
+                    top: 6,
                     child: Container(
                       padding: const EdgeInsets.all(4),
-                      decoration: const BoxDecoration(
-                        color: Colors.red,
+                      decoration: BoxDecoration(
+                        color: Colors.red[400],
                         shape: BoxShape.circle,
+                      ),
+                      constraints: const BoxConstraints(
+                        minWidth: 16,
+                        minHeight: 16,
                       ),
                       child: Text(
                         '${cartProvider.itemCount}',
@@ -241,10 +271,32 @@ class _HomePageState extends State<HomePage> {
                           fontSize: 10,
                           fontWeight: FontWeight.bold,
                         ),
+                        textAlign: TextAlign.center,
                       ),
                     ),
                   ),
               ],
+            ),
+          ),
+          const SizedBox(width: 8),
+          Container(
+            decoration: BoxDecoration(
+              color: themeColor.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: IconButton(
+              icon: Icon(
+                Icons.favorite_border_outlined,
+                color: themeColor,
+                size: 24,
+              ),
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const FavoritesPage(),
+                  ),
+                );
+              },
             ),
           ),
         ],
@@ -259,66 +311,99 @@ class _HomePageState extends State<HomePage> {
             'Pet Lover';
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+      padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFF5C6BC0), Color(0xFF3949AB)],
+        gradient: LinearGradient(
+          colors: [themeColor, themeColor.withOpacity(0.8)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: themeColor.withOpacity(0.3),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Text(
-                'Hello, $username!',
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Hello, $username!',
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Find everything your pet needs',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
               ),
               const Spacer(),
-              const Icon(
-                Icons.pets,
-                color: Colors.white70,
-                size: 28,
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.2),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.pets,
+                  color: Colors.white,
+                  size: 30,
+                ),
               ),
             ],
           ),
-          const SizedBox(height: 8),
-          const Text(
-            'Find everything your pet needs',
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.white70,
-            ),
-          ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 20),
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+            padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
             ),
             child: Row(
               children: [
-                const Icon(Icons.local_offer_outlined,
-                    color: Color(0xFF5C6BC0)),
-                const SizedBox(width: 8),
-                const Text(
+                Icon(
+                  Icons.local_offer_outlined,
+                  color: themeColor,
+                  size: 22,
+                ),
+                const SizedBox(width: 10),
+                Text(
                   'Use code PETLOVE for 15% off',
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF5C6BC0),
+                    color: themeColor,
+                    fontSize: 15,
                   ),
                 ),
                 const Spacer(),
-                const Icon(Icons.arrow_forward_ios,
-                    size: 14, color: Color(0xFF5C6BC0)),
+                Icon(
+                  Icons.arrow_forward_ios,
+                  size: 14,
+                  color: themeColor,
+                ),
               ],
             ),
           ),
@@ -349,18 +434,18 @@ class _HomePageState extends State<HomePage> {
                       builder: (context) => const CategoriesPage()),
                 );
               },
-              icon: const Text(
+              icon: Text(
                 'See All',
                 style: TextStyle(
                   fontSize: 14,
-                  color: Color(0xFF5C6BC0),
+                  color: themeColor,
                   fontWeight: FontWeight.w500,
                 ),
               ),
-              label: const Icon(
+              label: Icon(
                 Icons.arrow_forward_ios,
                 size: 12,
-                color: Color(0xFF5C6BC0),
+                color: themeColor,
               ),
             ),
           ],
@@ -381,8 +466,11 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
           child: _categories.isEmpty
-              ? const Center(
-                  child: Text('No categories found'),
+              ? Center(
+                  child: Text(
+                    'No categories found',
+                    style: TextStyle(color: Colors.grey[600]),
+                  ),
                 )
               : ListView.builder(
                   scrollDirection: Axis.horizontal,
@@ -395,6 +483,7 @@ class _HomePageState extends State<HomePage> {
                       id: category['id'],
                       icon: _getCategoryIcon(category['icon_name']),
                       title: category['name'],
+                      color: themeColor,
                       onTap: () {
                         Navigator.push(
                           context,
@@ -449,11 +538,11 @@ class _HomePageState extends State<HomePage> {
               onTap: () {
                 // Navigate to all products page
               },
-              child: const Text(
+              child: Text(
                 'See All',
                 style: TextStyle(
                   fontSize: 14,
-                  color: Color(0xFF5C6BC0),
+                  color: themeColor,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -462,10 +551,37 @@ class _HomePageState extends State<HomePage> {
         ),
         const SizedBox(height: 16),
         _featuredProducts.isEmpty
-            ? const Center(
-                child: Padding(
-                  padding: EdgeInsets.all(20.0),
-                  child: Text('No featured products found'),
+            ? Container(
+                height: 200,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.05),
+                      spreadRadius: 1,
+                      blurRadius: 4,
+                      offset: const Offset(0, 1),
+                    ),
+                  ],
+                ),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.shopping_bag_outlined,
+                        size: 40,
+                        color: Colors.grey[400],
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        'No featured products found',
+                        style: TextStyle(color: Colors.grey[600]),
+                      ),
+                    ],
+                  ),
                 ),
               )
             : GridView.builder(
@@ -520,11 +636,11 @@ class _HomePageState extends State<HomePage> {
                       builder: (context) => const AdoptionsPage()),
                 );
               },
-              child: const Text(
+              child: Text(
                 'See All',
                 style: TextStyle(
                   fontSize: 14,
-                  color: Color(0xFF5C6BC0),
+                  color: themeColor,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -537,24 +653,82 @@ class _HomePageState extends State<HomePage> {
               .getFeaturedAdoptablePets(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: Padding(
-                  padding: EdgeInsets.all(20.0),
-                  child: CircularProgressIndicator(),
-                ),
-              );
-            } else if (snapshot.hasError) {
               return Center(
                 child: Padding(
                   padding: const EdgeInsets.all(20.0),
-                  child: Text('Error: ${snapshot.error}'),
+                  child: CircularProgressIndicator(
+                    color: themeColor,
+                    strokeWidth: 3,
+                  ),
+                ),
+              );
+            } else if (snapshot.hasError) {
+              return Container(
+                height: 190,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.05),
+                      spreadRadius: 1,
+                      blurRadius: 4,
+                      offset: const Offset(0, 1),
+                    ),
+                  ],
+                ),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.error_outline,
+                        size: 40,
+                        color: Colors.red[300],
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        'Error: ${snapshot.error}',
+                        style: TextStyle(color: Colors.grey[600]),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
                 ),
               );
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return const Center(
-                child: Padding(
-                  padding: EdgeInsets.all(20.0),
-                  child: Text('No pets available for adoption'),
+              return Container(
+                height: 190,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.05),
+                      spreadRadius: 1,
+                      blurRadius: 4,
+                      offset: const Offset(0, 1),
+                    ),
+                  ],
+                ),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.pets,
+                        size: 40,
+                        color: Colors.grey[400],
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        'No pets available for adoption',
+                        style: TextStyle(color: Colors.grey[600]),
+                      ),
+                    ],
+                  ),
                 ),
               );
             } else {
@@ -562,13 +736,26 @@ class _HomePageState extends State<HomePage> {
                   .map((data) => AdoptablePet.fromJson(data))
                   .toList();
 
-              return SizedBox(
-                height: 190,
+              return Container(
+                height: 210,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                ),
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: pets.length,
+                  physics: const BouncingScrollPhysics(),
+                  padding: const EdgeInsets.symmetric(vertical: 8),
                   itemBuilder: (context, index) {
-                    return AdoptablePetCard(pet: pets[index]);
+                    return Padding(
+                      padding: EdgeInsets.only(
+                        right: 16,
+                        left: index == 0 ? 4 : 0,
+                      ),
+                      child: AdoptablePetCard(
+                        pet: pets[index],
+                      ),
+                    );
                   },
                 ),
               );
@@ -583,6 +770,7 @@ class _HomePageState extends State<HomePage> {
     return Builder(
       builder: (context) => Container(
         decoration: BoxDecoration(
+          color: Colors.white,
           boxShadow: [
             BoxShadow(
               color: Colors.grey.withOpacity(0.1),
@@ -599,11 +787,11 @@ class _HomePageState extends State<HomePage> {
           ),
           child: BottomNavigationBar(
             backgroundColor: Colors.white,
-            selectedItemColor: const Color(0xFF5C6BC0),
+            selectedItemColor: themeColor,
             unselectedItemColor: Colors.grey,
             showUnselectedLabels: true,
             type: BottomNavigationBarType.fixed,
-            elevation: 20,
+            elevation: 0,
             items: const [
               BottomNavigationBarItem(
                 icon: Icon(Icons.home_outlined),

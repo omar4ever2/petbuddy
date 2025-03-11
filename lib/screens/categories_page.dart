@@ -127,7 +127,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
                           padding: const EdgeInsets.symmetric(horizontal: 16),
                           decoration: BoxDecoration(
                             color: isSelected
-                                ? const Color(0xFF5C6BC0)
+                                ? const Color.fromARGB(255, 40, 108, 100)
                                 : Colors.grey[200],
                             borderRadius: BorderRadius.circular(25),
                           ),

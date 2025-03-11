@@ -116,7 +116,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Profile updated successfully'),
-          backgroundColor: Color(0xFF5C6BC0),
+          backgroundColor: Color.fromARGB(255, 40, 108, 100),
         ),
       );
       
@@ -155,13 +155,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     height: 20,
                     child: CircularProgressIndicator(
                       strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF5C6BC0)),
+                      valueColor: AlwaysStoppedAnimation<Color>(Color.fromARGB(255, 40, 108, 100)),
                     ),
                   )
                 : const Text(
                     'Save',
                     style: TextStyle(
-                      color: Color(0xFF5C6BC0),
+                      color: Color.fromARGB(255, 40, 108, 100),
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -182,7 +182,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         children: [
                           CircleAvatar(
                             radius: 60,
-                            backgroundColor: const Color(0xFF5C6BC0).withOpacity(0.1),
+                            backgroundColor: const Color.fromARGB(255, 40, 108, 100).withOpacity(0.1),
                             backgroundImage: _imageFile != null
                                 ? FileImage(_imageFile!)
                                 : _currentAvatarUrl != null && _currentAvatarUrl!.isNotEmpty
@@ -197,7 +197,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                                     style: const TextStyle(
                                       fontSize: 40,
                                       fontWeight: FontWeight.bold,
-                                      color: Color(0xFF5C6BC0),
+                                      color: Color.fromARGB(255, 40, 108, 100),
                                     ),
                                   )
                                 : null,
@@ -210,7 +210,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                               child: Container(
                                 padding: const EdgeInsets.all(8),
                                 decoration: const BoxDecoration(
-                                  color: Color(0xFF5C6BC0),
+                                  color: Color.fromARGB(255, 40, 108, 100),
                                   shape: BoxShape.circle,
                                 ),
                                 child: const Icon(

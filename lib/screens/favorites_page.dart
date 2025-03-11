@@ -103,13 +103,13 @@ class _FavoritesPageState extends State<FavoritesPage> {
                       Container(
                         padding: const EdgeInsets.all(24),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF5C6BC0).withOpacity(0.1),
+                          color: const Color.fromARGB(255, 40, 108, 100).withOpacity(0.1),
                           shape: BoxShape.circle,
                         ),
                         child: const Icon(
                           Icons.favorite_border,
                           size: 80,
-                          color: Color(0xFF5C6BC0),
+                          color: Color.fromARGB(255, 40, 108, 100),
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -132,7 +132,7 @@ class _FavoritesPageState extends State<FavoritesPage> {
                       ElevatedButton(
                         onPressed: () => Navigator.of(context).pop(),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF5C6BC0),
+                          backgroundColor: const Color.fromARGB(255, 40, 108, 100),
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
                           shape: RoundedRectangleBorder(

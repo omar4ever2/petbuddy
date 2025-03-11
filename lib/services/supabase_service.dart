@@ -358,91 +358,104 @@ class SupabaseService with ChangeNotifier {
     }
   }
 
-  // Fetch user orders
+  // Get user orders
   Future<List<Map<String, dynamic>>> getUserOrders() async {
+    if (!isAuthenticated) {
+      throw Exception('User not authenticated');
+    }
+    
     try {
-      if (!isAuthenticated) {
-        return [];
-      }
+      // Instead of fetching from Supabase, return mock data for testing
+      print('Getting orders for user ID: ${_user!.id}');
       
-      // For demo purposes, we'll return mock data
-      // In a real app, you would fetch from Supabase
+      // Simulate a delay to make it feel like a real API call
+      await Future.delayed(const Duration(milliseconds: 800));
+      
+      // Get current date for relative dates
+      final now = DateTime.now();
+      
+      // Return mock orders data
       return [
         {
-          'id': '12345678-abcd-1234-efgh-123456789012',
-          'created_at': DateTime.now().subtract(const Duration(days: 2)).toIso8601String(),
-          'status': 'Processing',
-          'total_amount': 129.97,
-          'shipping_address': '123 Main St, Apt 4B, New York, NY 10001',
-          'payment_method': 'Credit Card (**** 1234)',
+          'id': 'order_${now.millisecondsSinceEpoch - 500000}',
+          'user_id': _user!.id,
+          'status': 'delivered',
+          'total_amount': 125.99,
+          'payment_method': 'Credit Card',
+          'shipping_address': '123 Pet Street, Pet City, PC 12345',
+          'customer_name': 'John Doe',
+          'customer_email': _user?.email ?? 'user@example.com',
+          'customer_phone': '+1 (555) 123-4567',
+          'created_at': now.subtract(const Duration(days: 15)).toIso8601String(),
           'items': [
             {
+              'id': 'item_1',
               'name': 'Premium Dog Food',
-              'quantity': 2,
-              'price': 29.99,
-              'image_url': 'https://images.unsplash.com/photo-1589924691995-400dc9ecc119?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-            },
-            {
-              'name': 'Dog Collar - Large',
-              'quantity': 1,
-              'price': 19.99,
-              'image_url': 'https://images.unsplash.com/photo-1567612529009-afe25eb3d0bc?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-            },
-            {
-              'name': 'Interactive Dog Toy',
-              'quantity': 1,
               'price': 49.99,
-              'image_url': 'https://images.unsplash.com/photo-1576201836106-db1758fd1c97?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
-            },
-          ],
-        },
-        {
-          'id': '87654321-dcba-4321-hgfe-210987654321',
-          'created_at': DateTime.now().subtract(const Duration(days: 15)).toIso8601String(),
-          'status': 'Delivered',
-          'total_amount': 89.98,
-          'shipping_address': '123 Main St, Apt 4B, New York, NY 10001',
-          'payment_method': 'PayPal',
-          'items': [
-            {
-              'name': 'Cat Tree Condo',
-              'quantity': 1,
-              'price': 79.99,
-              'image_url': 'https://images.unsplash.com/photo-1592194996308-7b43878e84a6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1974&q=80',
-            },
-            {
-              'name': 'Cat Treats',
               'quantity': 2,
-              'price': 4.99,
-              'image_url': 'https://images.unsplash.com/photo-1583511655826-05700442982d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+              'image_url': 'https://images.unsplash.com/photo-1589924691995-400dc9ecc119?q=80&w=2071&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            },
+            {
+              'id': 'item_2',
+              'name': 'Dog Collar',
+              'price': 25.99,
+              'quantity': 1,
+              'image_url': 'https://images.unsplash.com/photo-1599839575945-a9e5af0c3fa5?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
             },
           ],
         },
         {
-          'id': '13579246-abcd-2468-efgh-135792468013',
-          'created_at': DateTime.now().subtract(const Duration(days: 30)).toIso8601String(),
-          'status': 'Shipped',
-          'total_amount': 45.98,
-          'shipping_address': '123 Main St, Apt 4B, New York, NY 10001',
-          'payment_method': 'Credit Card (**** 5678)',
+          'id': 'order_${now.millisecondsSinceEpoch - 1000000}',
+          'user_id': _user!.id,
+          'status': 'shipped',
+          'total_amount': 89.97,
+          'payment_method': 'PayPal',
+          'shipping_address': '123 Pet Street, Pet City, PC 12345',
+          'customer_name': 'John Doe',
+          'customer_email': _user?.email ?? 'user@example.com',
+          'customer_phone': '+1 (555) 123-4567',
+          'created_at': now.subtract(const Duration(days: 5)).toIso8601String(),
           'items': [
             {
-              'name': 'Bird Cage - Medium',
+              'id': 'item_3',
+              'name': 'Cat Tree',
+              'price': 89.97,
               'quantity': 1,
-              'price': 39.99,
-              'image_url': 'https://images.unsplash.com/photo-1552728089-57bdde30beb3?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+              'image_url': 'https://images.unsplash.com/photo-1545249390-6bdfa286032f?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+            },
+          ],
+        },
+        {
+          'id': 'order_${now.millisecondsSinceEpoch - 100000}',
+          'user_id': _user!.id,
+          'status': 'processing',
+          'total_amount': 45.98,
+          'payment_method': 'Credit Card',
+          'shipping_address': '123 Pet Street, Pet City, PC 12345',
+          'customer_name': 'John Doe',
+          'customer_email': _user?.email ?? 'user@example.com',
+          'customer_phone': '+1 (555) 123-4567',
+          'created_at': now.subtract(const Duration(days: 1)).toIso8601String(),
+          'items': [
+            {
+              'id': 'item_4',
+              'name': 'Bird Cage',
+              'price': 35.99,
+              'quantity': 1,
+              'image_url': 'https://images.unsplash.com/photo-1520808663317-647b476a81b9?q=80&w=1973&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
             },
             {
-              'name': 'Bird Food Mix',
+              'id': 'item_5',
+              'name': 'Bird Food',
+              'price': 9.99,
               'quantity': 1,
-              'price': 5.99,
-              'image_url': 'https://images.unsplash.com/photo-1600880292089-90a7e086ee0c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60',
+              'image_url': 'https://images.unsplash.com/photo-1522069169874-c58ec4b76be5?q=80&w=2012&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
             },
           ],
         },
       ];
       
-      // In a real app, you would fetch from Supabase like this:
+      // Original Supabase code (commented out)
       /*
       final response = await _client
           .from('orders')
@@ -453,75 +466,98 @@ class SupabaseService with ChangeNotifier {
       return List<Map<String, dynamic>>.from(response);
       */
     } catch (e) {
-      print('Error fetching user orders: $e');
-      return [];
+      print('Error getting user orders: $e');
+      throw Exception('Failed to get user orders: $e');
     }
   }
 
   // Get user profile data
   Future<Map<String, dynamic>> getUserProfile() async {
+    if (!isAuthenticated) {
+      throw Exception('User not authenticated');
+    }
+    
     try {
-      if (!isAuthenticated) {
-        throw Exception('User not authenticated');
-      }
-      
-      // Instead of fetching from Supabase, return mock data
-      print('Returning mock user profile data');
+      // Instead of fetching from Supabase, return mock data for testing
+      print('Getting user profile data for user ID: ${_user!.id}');
       
       // Simulate a delay to make it feel like a real API call
-      await Future.delayed(const Duration(milliseconds: 500));
+      await Future.delayed(const Duration(milliseconds: 800));
       
+      // Return mock profile data
       return {
-        'id': _client.auth.currentUser?.id ?? 'user123',
+        'id': _user!.id,
+        'username': _user?.userMetadata?['username'] ?? 'Pet Lover',
+        'email': _user?.email ?? 'user@example.com',
         'full_name': 'John Doe',
-        'email': 'john.doe@example.com',
-        'phone': '(555) 123-4567',
-        'address': '123 Main Street',
-        'city': 'New York',
-        'state': 'NY',
-        'zip': '10001',
+        'phone': '+1 (555) 123-4567',
+        'address': '123 Pet Street',
+        'city': 'Pet City',
+        'state': 'PC',
+        'zip': '12345',
+        'avatar_url': 'https://ui-avatars.com/api/?name=John+Doe&background=0D8ABC&color=fff',
+        'favorites_count': 5,
         'created_at': DateTime.now().subtract(const Duration(days: 30)).toIso8601String(),
       };
       
       // Original Supabase code (commented out)
       /*
-      final userId = _client.auth.currentUser!.id;
-      
       final response = await _client
           .from('profiles')
-          .select()
-          .eq('id', userId)
+          .select('*')
+          .eq('id', _user!.id)
           .single();
       
       return response;
       */
     } catch (e) {
       print('Error getting user profile: $e');
-      return {};
+      throw Exception('Failed to get user profile: $e');
     }
   }
-
+  
   // Update user profile
-  Future<void> updateUserProfile(Map<String, dynamic> data) async {
+  Future<Map<String, dynamic>> updateUserProfile(Map<String, dynamic> data) async {
+    if (!isAuthenticated) {
+      throw Exception('User not authenticated');
+    }
+    
     try {
-      if (!isAuthenticated) {
-        throw Exception('User not authenticated');
-      }
-      
-      // In a real app, you would update in Supabase like this:
-      await _client
-          .from('user_profiles')
-          .update(data)
-          .eq('id', _user!.id);
-      
-      // For demo purposes, we'll just print the data
+      // Instead of updating in Supabase, just return the data
       print('Updating user profile with data: $data');
       
-      // Notify listeners that profile data has changed
-      notifyListeners();
+      // Simulate a delay to make it feel like a real API call
+      await Future.delayed(const Duration(milliseconds: 800));
+      
+      // Return the updated data
+      return {
+        'id': _user!.id,
+        'username': data['username'] ?? _user?.userMetadata?['username'] ?? 'Pet Lover',
+        'email': _user?.email ?? 'user@example.com',
+        'full_name': data['full_name'] ?? 'John Doe',
+        'phone': data['phone'] ?? '+1 (555) 123-4567',
+        'address': data['address'] ?? '123 Pet Street',
+        'city': data['city'] ?? 'Pet City',
+        'state': data['state'] ?? 'PC',
+        'zip': data['zip'] ?? '12345',
+        'avatar_url': data['avatar_url'] ?? 'https://ui-avatars.com/api/?name=John+Doe&background=0D8ABC&color=fff',
+        'updated_at': DateTime.now().toIso8601String(),
+      };
+      
+      // Original Supabase code (commented out)
+      /*
+      final response = await _client
+          .from('profiles')
+          .update(data)
+          .eq('id', _user!.id)
+          .select()
+          .single();
+      
+      return response;
+      */
     } catch (e) {
       print('Error updating user profile: $e');
-      rethrow;
+      throw Exception('Failed to update user profile: $e');
     }
   }
 
@@ -1025,5 +1061,258 @@ class SupabaseService with ChangeNotifier {
     final index = lastChar.codeUnitAt(0) % statusOptions.length;
     
     return statusOptions[index];
+  }
+
+  // Get user pets
+  Future<List<Map<String, dynamic>>> getUserPets() async {
+    if (!isAuthenticated) {
+      throw Exception('User not authenticated');
+    }
+    
+    try {
+      // Instead of fetching from Supabase, return mock data for testing
+      print('Getting pets for user ID: ${_user!.id}');
+      
+      // Simulate a delay to make it feel like a real API call
+      await Future.delayed(const Duration(milliseconds: 800));
+      
+      // Get current date for relative dates
+      final now = DateTime.now();
+      
+      // Return mock pets data
+      return [
+        {
+          'id': 'pet_1',
+          'user_id': _user!.id,
+          'name': 'Max',
+          'species': 'Dog',
+          'breed': 'Golden Retriever',
+          'birth_date': now.subtract(const Duration(days: 365 * 3)).toIso8601String(),
+          'weight': 30.5,
+          'gender': 'Male',
+          'image_url': 'https://images.unsplash.com/photo-1552053831-71594a27632d?q=80&w=1924&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+          'color': 'Golden',
+          'is_neutered': true,
+          'vaccinations': [
+            {
+              'name': 'Rabies',
+              'date': now.subtract(const Duration(days: 180)).toIso8601String(),
+              'next_due': now.add(const Duration(days: 180)).toIso8601String(),
+            },
+            {
+              'name': 'Distemper',
+              'date': now.subtract(const Duration(days: 90)).toIso8601String(),
+              'next_due': now.add(const Duration(days: 270)).toIso8601String(),
+            }
+          ],
+          'medical_records': [
+            {
+              'date': now.subtract(const Duration(days: 60)).toIso8601String(),
+              'type': 'Check-up',
+              'notes': 'Healthy, no issues found',
+            }
+          ],
+          'notes': 'Loves to play fetch and swim',
+        },
+        {
+          'id': 'pet_2',
+          'user_id': _user!.id,
+          'name': 'Luna',
+          'species': 'Cat',
+          'breed': 'Siamese',
+          'birth_date': now.subtract(const Duration(days: 365 * 2)).toIso8601String(),
+          'weight': 4.2,
+          'gender': 'Female',
+          'image_url': 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?q=80&w=2043&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+          'color': 'Cream with brown points',
+          'is_neutered': true,
+          'vaccinations': [
+            {
+              'name': 'Rabies',
+              'date': now.subtract(const Duration(days: 120)).toIso8601String(),
+              'next_due': now.add(const Duration(days: 240)).toIso8601String(),
+            },
+            {
+              'name': 'Feline Leukemia',
+              'date': now.subtract(const Duration(days: 150)).toIso8601String(),
+              'next_due': now.add(const Duration(days: 210)).toIso8601String(),
+            }
+          ],
+          'medical_records': [
+            {
+              'date': now.subtract(const Duration(days: 90)).toIso8601String(),
+              'type': 'Dental Cleaning',
+              'notes': 'Teeth in good condition',
+            }
+          ],
+          'notes': 'Very vocal, loves to sit on laps',
+        },
+        {
+          'id': 'pet_3',
+          'user_id': _user!.id,
+          'name': 'Buddy',
+          'species': 'Dog',
+          'breed': 'Beagle',
+          'birth_date': now.subtract(const Duration(days: 365 * 1 + 180)).toIso8601String(),
+          'weight': 12.8,
+          'gender': 'Male',
+          'image_url': 'https://images.unsplash.com/photo-1505628346881-b72b27e84530?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+          'color': 'Tricolor',
+          'is_neutered': false,
+          'vaccinations': [
+            {
+              'name': 'Rabies',
+              'date': now.subtract(const Duration(days: 30)).toIso8601String(),
+              'next_due': now.add(const Duration(days: 330)).toIso8601String(),
+            }
+          ],
+          'medical_records': [],
+          'notes': 'Energetic and loves to follow scents',
+        }
+      ];
+      
+      // Original Supabase code (commented out)
+      /*
+      final response = await _client
+          .from('pets')
+          .select('*')
+          .eq('user_id', _user!.id)
+          .order('created_at', ascending: false);
+      
+      return List<Map<String, dynamic>>.from(response);
+      */
+    } catch (e) {
+      print('Error getting user pets: $e');
+      throw Exception('Failed to get user pets: $e');
+    }
+  }
+  
+  // Add a new pet
+  Future<Map<String, dynamic>> addPet(Map<String, dynamic> petData) async {
+    if (!isAuthenticated) {
+      throw Exception('User not authenticated');
+    }
+    
+    try {
+      // Instead of adding to Supabase, just return the data with an ID
+      print('Adding mock pet with data: $petData');
+      
+      // Simulate a delay to make it feel like a real API call
+      await Future.delayed(const Duration(milliseconds: 800));
+      
+      // Add user ID if not present
+      if (!petData.containsKey('user_id')) {
+        petData['user_id'] = _user!.id;
+      }
+      
+      // Add created_at if not present
+      if (!petData.containsKey('created_at')) {
+        petData['created_at'] = DateTime.now().toIso8601String();
+      }
+      
+      // Add pet ID if not present
+      if (!petData.containsKey('id')) {
+        petData['id'] = 'pet_${DateTime.now().millisecondsSinceEpoch}';
+      }
+      
+      return petData;
+      
+      // Original Supabase code (commented out)
+      /*
+      final userId = _client.auth.currentUser!.id;
+      
+      // Add user ID to pet data
+      petData['user_id'] = userId;
+      
+      // Add created_at timestamp
+      petData['created_at'] = DateTime.now().toIso8601String();
+      
+      // Insert pet into pets table
+      final response = await _client
+          .from('pets')
+          .insert(petData)
+          .select()
+          .single();
+      
+      return response;
+      */
+    } catch (e) {
+      print('Error adding pet: $e');
+      throw Exception('Failed to add pet: $e');
+    }
+  }
+  
+  // Update a pet
+  Future<Map<String, dynamic>> updatePet(String petId, Map<String, dynamic> petData) async {
+    if (!isAuthenticated) {
+      throw Exception('User not authenticated');
+    }
+    
+    try {
+      // Instead of updating in Supabase, just return the updated data
+      print('Updating mock pet with ID: $petId and data: $petData');
+      
+      // Simulate a delay to make it feel like a real API call
+      await Future.delayed(const Duration(milliseconds: 800));
+      
+      // Add updated_at timestamp
+      petData['updated_at'] = DateTime.now().toIso8601String();
+      
+      // Ensure ID is preserved
+      petData['id'] = petId;
+      
+      return petData;
+      
+      // Original Supabase code (commented out)
+      /*
+      final userId = _client.auth.currentUser!.id;
+      
+      // Add updated_at timestamp
+      petData['updated_at'] = DateTime.now().toIso8601String();
+      
+      // Update pet in pets table
+      final response = await _client
+          .from('pets')
+          .update(petData)
+          .eq('id', petId)
+          .eq('user_id', userId)
+          .select()
+          .single();
+      
+      return response;
+      */
+    } catch (e) {
+      print('Error updating pet: $e');
+      throw Exception('Failed to update pet: $e');
+    }
+  }
+  
+  // Delete a pet
+  Future<void> deletePet(String petId) async {
+    if (!isAuthenticated) {
+      throw Exception('User not authenticated');
+    }
+    
+    try {
+      // Instead of deleting from Supabase, just log the deletion
+      print('Deleting mock pet with ID: $petId');
+      
+      // Simulate a delay to make it feel like a real API call
+      await Future.delayed(const Duration(milliseconds: 600));
+      
+      // Original Supabase code (commented out)
+      /*
+      final userId = _client.auth.currentUser!.id;
+      
+      await _client
+          .from('pets')
+          .delete()
+          .eq('id', petId)
+          .eq('user_id', userId);
+      */
+    } catch (e) {
+      print('Error deleting pet: $e');
+      throw Exception('Failed to delete pet: $e');
+    }
   }
 } 

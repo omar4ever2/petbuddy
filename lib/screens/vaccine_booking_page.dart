@@ -19,7 +19,7 @@ class _VaccineBookingPageState extends State<VaccineBookingPage> {
   List<Map<String, dynamic>> _vaccineTypes = [];
   List<Map<String, dynamic>> _upcomingAppointments = [];
   bool _showOnlyUpcoming = true;
-  
+
   // Form fields
   final _petNameController = TextEditingController();
   String _petType = 'Dog';
@@ -27,43 +27,52 @@ class _VaccineBookingPageState extends State<VaccineBookingPage> {
   DateTime _selectedDate = DateTime.now().add(const Duration(days: 1));
   TimeOfDay _selectedTime = const TimeOfDay(hour: 10, minute: 0);
   final _notesController = TextEditingController();
-  
-  final List<String> _petTypes = ['Dog', 'Cat', 'Bird', 'Rabbit', 'Hamster', 'Other'];
+
+  final List<String> _petTypes = [
+    'Dog',
+    'Cat',
+    'Bird',
+    'Rabbit',
+    'Hamster',
+    'Other'
+  ];
 
   @override
   void initState() {
     super.initState();
     _loadData();
   }
-  
+
   @override
   void dispose() {
     _petNameController.dispose();
     _notesController.dispose();
     super.dispose();
   }
-  
+
   Future<void> _loadData() async {
     setState(() {
       _isLoading = true;
       _isLoadingAppointments = true;
     });
-    
+
     try {
-      final supabaseService = Provider.of<SupabaseService>(context, listen: false);
-      
+      final supabaseService =
+          Provider.of<SupabaseService>(context, listen: false);
+
       // Load vaccine types
       final vaccineTypes = await supabaseService.getVaccineTypes();
-      
+
       // Load upcoming appointments
-      final upcomingAppointments = await supabaseService.getUpcomingVaccineAppointments();
-      
+      final upcomingAppointments =
+          await supabaseService.getUpcomingVaccineAppointments();
+
       setState(() {
         _vaccineTypes = vaccineTypes;
         if (vaccineTypes.isNotEmpty) {
           _vaccineType = vaccineTypes[0]['name'];
         }
-        
+
         _upcomingAppointments = upcomingAppointments;
         _isLoading = false;
         _isLoadingAppointments = false;
@@ -74,7 +83,7 @@ class _VaccineBookingPageState extends State<VaccineBookingPage> {
         _isLoading = false;
         _isLoadingAppointments = false;
       });
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error loading data: $e')),
@@ -82,7 +91,7 @@ class _VaccineBookingPageState extends State<VaccineBookingPage> {
       }
     }
   }
-  
+
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -93,21 +102,21 @@ class _VaccineBookingPageState extends State<VaccineBookingPage> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: const ColorScheme.light(
-              primary: Color(0xFF5C6BC0),
+              primary: Color.fromARGB(255, 40, 108, 100),
             ),
           ),
           child: child!,
         );
       },
     );
-    
+
     if (picked != null && picked != _selectedDate) {
       setState(() {
         _selectedDate = picked;
       });
     }
   }
-  
+
   Future<void> _selectTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
@@ -116,33 +125,34 @@ class _VaccineBookingPageState extends State<VaccineBookingPage> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: const ColorScheme.light(
-              primary: Color(0xFF5C6BC0),
+              primary: Color.fromARGB(255, 40, 108, 100),
             ),
           ),
           child: child!,
         );
       },
     );
-    
+
     if (picked != null && picked != _selectedTime) {
       setState(() {
         _selectedTime = picked;
       });
     }
   }
-  
+
   Future<void> _bookAppointment() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
-    
+
     setState(() {
       _isLoading = true;
     });
-    
+
     try {
-      final supabaseService = Provider.of<SupabaseService>(context, listen: false);
-      
+      final supabaseService =
+          Provider.of<SupabaseService>(context, listen: false);
+
       // Combine date and time
       final appointmentDateTime = DateTime(
         _selectedDate.year,
@@ -151,7 +161,7 @@ class _VaccineBookingPageState extends State<VaccineBookingPage> {
         _selectedTime.hour,
         _selectedTime.minute,
       );
-      
+
       final appointmentData = {
         'pet_name': _petNameController.text,
         'pet_type': _petType,
@@ -159,14 +169,15 @@ class _VaccineBookingPageState extends State<VaccineBookingPage> {
         'appointment_date': appointmentDateTime.toIso8601String(),
         'notes': _notesController.text,
       };
-      
-      final response = await supabaseService.createVaccineAppointment(appointmentData);
-      
+
+      final response =
+          await supabaseService.createVaccineAppointment(appointmentData);
+
       // Add the new appointment to the list to show it immediately
       setState(() {
         _upcomingAppointments = [response, ..._upcomingAppointments];
       });
-      
+
       // Reset form
       _petNameController.clear();
       _notesController.clear();
@@ -175,7 +186,7 @@ class _VaccineBookingPageState extends State<VaccineBookingPage> {
         _selectedDate = DateTime.now().add(const Duration(days: 1));
         _selectedTime = const TimeOfDay(hour: 10, minute: 0);
       });
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -186,7 +197,7 @@ class _VaccineBookingPageState extends State<VaccineBookingPage> {
       }
     } catch (e) {
       print('Error booking appointment: $e');
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -201,16 +212,17 @@ class _VaccineBookingPageState extends State<VaccineBookingPage> {
       });
     }
   }
-  
+
   Future<void> _cancelAppointment(String appointmentId) async {
     setState(() {
       _isLoading = true;
     });
-    
+
     try {
-      final supabaseService = Provider.of<SupabaseService>(context, listen: false);
+      final supabaseService =
+          Provider.of<SupabaseService>(context, listen: false);
       await supabaseService.cancelVaccineAppointment(appointmentId);
-      
+
       // Update the local list to reflect the cancellation
       setState(() {
         _upcomingAppointments = _upcomingAppointments.map((appointment) {
@@ -220,7 +232,7 @@ class _VaccineBookingPageState extends State<VaccineBookingPage> {
           return appointment;
         }).toList();
       });
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -231,7 +243,7 @@ class _VaccineBookingPageState extends State<VaccineBookingPage> {
       }
     } catch (e) {
       print('Error cancelling appointment: $e');
-      
+
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -270,7 +282,7 @@ class _VaccineBookingPageState extends State<VaccineBookingPage> {
             ),
     );
   }
-  
+
   Widget _buildBookingForm() {
     return Card(
       elevation: 2,
@@ -410,7 +422,7 @@ class _VaccineBookingPageState extends State<VaccineBookingPage> {
                 child: ElevatedButton(
                   onPressed: _isLoading ? null : _bookAppointment,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF5C6BC0),
+                    backgroundColor: const Color.fromARGB(255, 40, 108, 100),
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
@@ -419,9 +431,8 @@ class _VaccineBookingPageState extends State<VaccineBookingPage> {
                   child: const Text(
                     'Book Appointment',
                     style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
+                        fontSize: 16,
+                        color: Color.fromARGB(255, 250, 250, 250)),
                   ),
                 ),
               ),
@@ -431,16 +442,17 @@ class _VaccineBookingPageState extends State<VaccineBookingPage> {
       ),
     );
   }
-  
+
   Widget _buildUpcomingAppointments() {
     // Filter appointments based on the toggle
     final filteredAppointments = _showOnlyUpcoming
         ? _upcomingAppointments.where((appointment) {
-            final appointmentDate = DateTime.parse(appointment['appointment_date']);
+            final appointmentDate =
+                DateTime.parse(appointment['appointment_date']);
             return appointmentDate.isAfter(DateTime.now());
           }).toList()
         : _upcomingAppointments;
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -464,7 +476,7 @@ class _VaccineBookingPageState extends State<VaccineBookingPage> {
                       _showOnlyUpcoming = value;
                     });
                   },
-                  activeColor: const Color(0xFF5C6BC0),
+                  activeColor: const Color.fromARGB(255, 40, 108, 100),
                 ),
                 const Text('Upcoming only'),
               ],
@@ -512,11 +524,12 @@ class _VaccineBookingPageState extends State<VaccineBookingPage> {
                       final appointment = VaccineAppointment.fromJson(
                         filteredAppointments[index],
                       );
-                      
+
                       return VaccineAppointmentCard(
                         appointment: appointment,
-                        onCancel: appointment.status.toLowerCase() == 'pending' || 
-                                  appointment.status.toLowerCase() == 'confirmed'
+                        onCancel: appointment.status.toLowerCase() ==
+                                    'pending' ||
+                                appointment.status.toLowerCase() == 'confirmed'
                             ? () => _cancelAppointment(appointment.id)
                             : null,
                       );
@@ -525,4 +538,4 @@ class _VaccineBookingPageState extends State<VaccineBookingPage> {
       ],
     );
   }
-} 
+}

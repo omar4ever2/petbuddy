@@ -101,7 +101,7 @@ class _AdoptionsPageState extends State<AdoptionsPage> {
                           ),
                           decoration: BoxDecoration(
                             color: isSelected
-                                ? const Color(0xFF5C6BC0)
+                                ? const Color.fromARGB(255, 40, 108, 100)
                                 : Colors.grey[200],
                             borderRadius: BorderRadius.circular(20),
                           ),
@@ -174,7 +174,7 @@ class _AdoptionsPageState extends State<AdoptionsPage> {
                                 _loadPets();
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF5C6BC0),
+                                backgroundColor: const Color.fromARGB(255, 40, 108, 100),
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 24,
                                   vertical: 12,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/cart_provider.dart';
 import '../providers/favorites_provider.dart';
+import '../providers/theme_provider.dart';
 
 class ProductCard extends StatelessWidget {
   final String id;
@@ -25,19 +26,25 @@ class ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final favoritesProvider = Provider.of<FavoritesProvider>(context);
     final cartProvider = Provider.of<CartProvider>(context);
+    final themeProvider = Provider.of<ThemeProvider>(context);
     final isFavorite = favoritesProvider.isFavorite(id);
     final isInCart = cartProvider.isInCart(id);
+    final isDarkMode = themeProvider.isDarkMode;
+    final themeColor = const Color.fromARGB(255, 40, 108, 100);
+    final priceColor = const Color.fromARGB(255, 40, 108, 100);
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDarkMode ? const Color(0xFF1E1E1E) : Colors.white,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: isDarkMode 
+                ? Colors.black.withOpacity(0.3) 
+                : themeColor.withOpacity(0.1),
             spreadRadius: 1,
-            blurRadius: 4,
-            offset: const Offset(0, 1),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -59,11 +66,13 @@ class ProductCard extends StatelessWidget {
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) {
                             return Container(
-                              color: const Color(0xFFF5F5F5),
-                              child: const Center(
+                              color: isDarkMode 
+                                  ? const Color(0xFF2A2A2A) 
+                                  : const Color(0xFFF5F5F5),
+                              child: Center(
                                 child: Icon(
                                   Icons.pets,
-                                  color: Color(0xFF5C6BC0),
+                                  color: themeColor,
                                   size: 48,
                                 ),
                               ),
@@ -71,11 +80,13 @@ class ProductCard extends StatelessWidget {
                           },
                         )
                       : Container(
-                          color: const Color(0xFFF5F5F5),
-                          child: const Center(
+                          color: isDarkMode 
+                              ? const Color(0xFF2A2A2A) 
+                              : const Color(0xFFF5F5F5),
+                          child: Center(
                             child: Icon(
                               Icons.pets,
-                              color: Color(0xFF5C6BC0),
+                              color: themeColor,
                               size: 48,
                             ),
                           ),
@@ -96,11 +107,15 @@ class ProductCard extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.all(6),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: isDarkMode 
+                          ? const Color(0xFF2A2A2A) 
+                          : Colors.white,
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.withOpacity(0.2),
+                          color: isDarkMode 
+                              ? Colors.black.withOpacity(0.3) 
+                              : Colors.grey.withOpacity(0.2),
                           spreadRadius: 1,
                           blurRadius: 2,
                           offset: const Offset(0, 1),
@@ -125,7 +140,7 @@ class ProductCard extends StatelessWidget {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.red,
+                      color: themeColor,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
@@ -147,9 +162,10 @@ class ProductCard extends StatelessWidget {
               children: [
                 Text(
                   name,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
+                    color: isDarkMode ? Colors.white : Colors.black87,
                   ),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -161,14 +177,14 @@ class ProductCard extends StatelessWidget {
                       Icon(
                         Icons.star,
                         size: 14,
-                        color: Colors.amber[700],
+                        color: themeColor,
                       ),
                       const SizedBox(width: 2),
                       Text(
                         rating.toStringAsFixed(1),
                         style: TextStyle(
                           fontSize: 12,
-                          color: Colors.grey[600],
+                          color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
                         ),
                       ),
                     ],
@@ -185,25 +201,25 @@ class ProductCard extends StatelessWidget {
                             '\$${price.toStringAsFixed(2)}',
                             style: TextStyle(
                               fontSize: 12,
-                              color: Colors.grey[600],
+                              color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
                               decoration: TextDecoration.lineThrough,
                             ),
                           ),
                           Text(
                             '\$${discountPrice!.toStringAsFixed(2)}',
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: Color(0xFF5C6BC0),
+                              color: priceColor,
                             ),
                           ),
                         ] else
                           Text(
                             '\$${price.toStringAsFixed(2)}',
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: Color(0xFF5C6BC0),
+                              color: priceColor,
                             ),
                           ),
                       ],
@@ -220,13 +236,13 @@ class ProductCard extends StatelessWidget {
                         padding: const EdgeInsets.all(6),
                         decoration: BoxDecoration(
                           color: isInCart
-                              ? Colors.red.withOpacity(0.1)
-                              : const Color(0xFF5C6BC0).withOpacity(0.1),
+                              ? Colors.red.withOpacity(isDarkMode ? 0.2 : 0.1)
+                              : themeColor.withOpacity(isDarkMode ? 0.2 : 0.1),
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
                           isInCart ? Icons.remove_shopping_cart : Icons.add_shopping_cart,
-                          color: isInCart ? Colors.red : const Color(0xFF5C6BC0),
+                          color: isInCart ? Colors.red : themeColor,
                           size: 18,
                         ),
                       ),

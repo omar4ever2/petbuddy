@@ -252,7 +252,7 @@ class OrderConfirmationPage extends StatelessWidget {
         label: const Text('Track Order'),
         style: OutlinedButton.styleFrom(
           padding: const EdgeInsets.symmetric(vertical: 16),
-          side: BorderSide(color: Theme.of(context).primaryColor),
+          side: BorderSide(color: const Color.fromARGB(255, 40, 108, 100)),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),

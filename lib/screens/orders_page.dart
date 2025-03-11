@@ -92,7 +92,7 @@ class _OrdersPageState extends State<OrdersPage> {
               Navigator.pop(context);
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF5C6BC0),
+              backgroundColor: const Color.fromARGB(255, 40, 108, 100),
               padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
@@ -190,7 +190,7 @@ class _OrdersPageState extends State<OrdersPage> {
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
-                    color: Color(0xFF5C6BC0),
+                    color: Color.fromARGB(255, 40, 108, 100),
                   ),
                 ),
               ],
@@ -207,14 +207,14 @@ class _OrdersPageState extends State<OrdersPage> {
                     _showOrderDetails(order);
                   },
                   style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Color(0xFF5C6BC0)),
+                    side: const BorderSide(color: Color.fromARGB(255, 40, 108, 100)),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
                   child: const Text(
                     'Details',
-                    style: TextStyle(color: Color(0xFF5C6BC0)),
+                    style: TextStyle(color: Color.fromARGB(255, 40, 108, 100)),
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -224,7 +224,7 @@ class _OrdersPageState extends State<OrdersPage> {
                       _showReviewDialog();
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF5C6BC0),
+                      backgroundColor: const Color.fromARGB(255, 40, 108, 100),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                       ),
@@ -507,7 +507,7 @@ class _OrdersPageState extends State<OrdersPage> {
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
-                              color: Color(0xFF5C6BC0),
+                              color: Color.fromARGB(255, 40, 108, 100),
                             ),
                           ),
                         ],
@@ -566,7 +566,7 @@ class _OrdersPageState extends State<OrdersPage> {
                     return IconButton(
                       icon: Icon(
                         index < rating ? Icons.star : Icons.star_border,
-                        color: const Color(0xFFFFC107),
+                        color: const Color.fromARGB(255, 40, 108, 100),
                         size: 32,
                       ),
                       onPressed: () {
@@ -604,7 +604,7 @@ class _OrdersPageState extends State<OrdersPage> {
                   Navigator.pop(context);
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF5C6BC0),
+                  backgroundColor: const Color.fromARGB(255, 40, 108, 100),
                 ),
                 child: const Text('Submit'),
               ),

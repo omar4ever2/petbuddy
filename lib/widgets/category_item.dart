@@ -5,6 +5,7 @@ class CategoryItem extends StatelessWidget {
   final IconData icon;
   final String title;
   final VoidCallback? onTap;
+  final Color? color;
 
   const CategoryItem({
     Key? key,
@@ -12,10 +13,13 @@ class CategoryItem extends StatelessWidget {
     required this.icon,
     required this.title,
     this.onTap,
+    this.color,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final themeColor = color ?? const Color.fromARGB(255, 37, 150, 190);
+    
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -27,13 +31,20 @@ class CategoryItem extends StatelessWidget {
               height: 70,
               width: 70,
               decoration: BoxDecoration(
-                color: const Color(0xFF5C6BC0).withOpacity(0.1),
+                color: themeColor.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: themeColor.withOpacity(0.05),
+                    blurRadius: 4,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
               ),
               child: Icon(
                 icon,
                 size: 32,
-                color: const Color(0xFF5C6BC0),
+                color: themeColor,
               ),
             ),
             const SizedBox(height: 8),

@@ -168,7 +168,7 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
             decoration: InputDecoration(
               hintText: 'Search for products...',
               hintStyle: TextStyle(color: Colors.grey[400]),
-              prefixIcon: const Icon(Icons.search, color: Color(0xFF5C6BC0)),
+              prefixIcon: const Icon(Icons.search, color: Color.fromARGB(255, 40, 108, 100)),
               border: InputBorder.none,
               contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               suffixIcon: _searchController.text.isNotEmpty
@@ -223,7 +223,7 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
                     onPressed: _clearSearchHistory,
                     child: const Text(
                       'Clear',
-                      style: TextStyle(color: Color(0xFF5C6BC0)),
+                      style: TextStyle(color: Color.fromARGB(255, 40, 108, 100)),
                     ),
                   ),
                 ],
@@ -237,9 +237,9 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
                     onTap: () => _performSearch(query),
                     child: Chip(
                       label: Text(query),
-                      backgroundColor: const Color(0xFF5C6BC0).withOpacity(0.1),
-                      labelStyle: const TextStyle(color: Color(0xFF5C6BC0)),
-                      deleteIcon: const Icon(Icons.close, size: 16, color: Color(0xFF5C6BC0)),
+                      backgroundColor: const Color.fromARGB(255, 40, 108, 100).withOpacity(0.1),
+                      labelStyle: const TextStyle(color: Color.fromARGB(255, 40, 108, 100)),
+                      deleteIcon: const Icon(Icons.close, size: 16, color: Color.fromARGB(255, 40, 108, 100)),
                       onDeleted: () {
                         setState(() {
                           _searchHistory.remove(query);
@@ -334,10 +334,10 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF5C6BC0).withOpacity(0.1),
+                  color: const Color.fromARGB(255, 40, 108, 100).withOpacity(0.1),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(icon, color: const Color(0xFF5C6BC0), size: 20),
+                child: Icon(icon, color: const Color.fromARGB(255, 40, 108, 100), size: 20),
               ),
               const SizedBox(width: 8),
               Expanded(
@@ -365,13 +365,13 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
             Container(
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: const Color(0xFF5C6BC0).withOpacity(0.1),
+                color: const Color.fromARGB(255, 40, 108, 100).withOpacity(0.1),
                 shape: BoxShape.circle,
               ),
               child: const Icon(
                 Icons.search_off,
                 size: 64,
-                color: Color(0xFF5C6BC0),
+                color: Color.fromARGB(255, 40, 108, 100),
               ),
             ),
             const SizedBox(height: 16),
@@ -400,7 +400,7 @@ class _SearchPageState extends State<SearchPage> with SingleTickerProviderStateM
                 });
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF5C6BC0),
+                backgroundColor: const Color.fromARGB(255, 40, 108, 100),
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                 shape: RoundedRectangleBorder(

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'home_page.dart';
 import 'login_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {
@@ -61,7 +60,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 child: const Text(
                   'Skip',
                   style: TextStyle(
-                    color: Color(0xFF5C6BC0),
+                    color: Color.fromARGB(255, 40, 108, 100),
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                   ),
@@ -115,7 +114,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           }
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF5C6BC0),
+                          backgroundColor: const Color.fromARGB(255, 40, 108, 100),
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                           shape: RoundedRectangleBorder(
@@ -148,8 +147,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       width: _currentPage == index ? 24 : 10,
       decoration: BoxDecoration(
         color: _currentPage == index
-            ? const Color(0xFF5C6BC0)
-            : const Color(0xFF5C6BC0).withOpacity(0.3),
+            ? const Color.fromARGB(255, 40, 108, 100)
+            : const Color.fromARGB(255, 40, 108, 100).withOpacity(0.3),
         borderRadius: BorderRadius.circular(5),
       ),
     );
@@ -179,13 +178,13 @@ class OnboardingPage extends StatelessWidget {
             width: 200,
             height: 200,
             decoration: BoxDecoration(
-              color: const Color(0xFF5C6BC0).withOpacity(0.1),
+              color: const Color.fromARGB(255, 40, 108, 100).withOpacity(0.1),
               shape: BoxShape.circle,
             ),
             child: Icon(
               icon,
               size: 100,
-              color: const Color(0xFF5C6BC0),
+              color: const Color.fromARGB(255, 40, 108, 100),
             ),
           ),
           const SizedBox(height: 40),
@@ -194,7 +193,7 @@ class OnboardingPage extends StatelessWidget {
             style: const TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF5C6BC0),
+              color: Color.fromARGB(255, 40, 108, 100),
             ),
             textAlign: TextAlign.center,
           ),

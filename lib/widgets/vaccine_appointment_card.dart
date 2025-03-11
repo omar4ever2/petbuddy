@@ -58,12 +58,12 @@ class VaccineAppointmentCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF5C6BC0).withOpacity(0.1),
+                    color: const Color.fromARGB(255, 40, 108, 100).withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Icon(
                     Icons.vaccines,
-                    color: Color(0xFF5C6BC0),
+                    color: Color.fromARGB(255, 40, 108, 100),
                     size: 24,
                   ),
                 ),

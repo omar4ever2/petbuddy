@@ -56,13 +56,13 @@ class CartPage extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF5C6BC0).withOpacity(0.1),
+                      color: const Color.fromARGB(255, 40, 108, 100).withOpacity(0.1),
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(
                       Icons.shopping_cart_outlined,
                       size: 80,
-                      color: Color(0xFF5C6BC0),
+                      color: Color.fromARGB(255, 40, 108, 100),
                     ),
                   ),
                   const SizedBox(height: 20),
@@ -85,7 +85,7 @@ class CartPage extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () => Navigator.of(context).pop(),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).primaryColor,
+                      backgroundColor: const Color.fromARGB(255, 40, 108, 100),
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
                       shape: RoundedRectangleBorder(
@@ -192,7 +192,7 @@ class CartPage extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Theme.of(context).primaryColor,
+                  color: const Color.fromARGB(255, 40, 108, 100),
                 ),
               ),
             ],
@@ -211,7 +211,7 @@ class CartPage extends StatelessWidget {
                       );
                     },
               style: ElevatedButton.styleFrom(
-                backgroundColor: Theme.of(context).primaryColor,
+                backgroundColor: const Color.fromARGB(255, 40, 108, 100),
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 15),
                 shape: RoundedRectangleBorder(

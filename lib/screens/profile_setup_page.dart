@@ -39,7 +39,7 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: const ColorScheme.light(
-              primary: Color(0xFF5C6BC0),
+              primary: Color.fromARGB(255, 40, 108, 100),
               onPrimary: Colors.white,
             ),
           ),
@@ -119,7 +119,7 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF5C6BC0),
+                    color: Color.fromARGB(255, 40, 108, 100),
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -235,13 +235,13 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
                   child: ElevatedButton(
                     onPressed: _isLoading ? null : _saveProfile,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF5C6BC0),
+                      backgroundColor: const Color.fromARGB(255, 40, 108, 100),
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      disabledBackgroundColor: const Color(0xFF5C6BC0).withOpacity(0.6),
+                      disabledBackgroundColor: const Color.fromARGB(255, 40, 108, 100).withOpacity(0.6),
                     ),
                     child: _isLoading
                         ? const SizedBox(

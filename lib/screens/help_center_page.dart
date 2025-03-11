@@ -124,7 +124,7 @@ class HelpCenterPage extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
       ),
       child: ListTile(
-        leading: Icon(icon, color: const Color(0xFF5C6BC0)),
+        leading: Icon(icon, color: const Color.fromARGB(255, 40, 108, 100)),
         title: Text(title),
         subtitle: Text(subtitle),
         trailing: const Icon(Icons.arrow_forward_ios, size: 16),

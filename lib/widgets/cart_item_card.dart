@@ -64,7 +64,7 @@ class CartItemCard extends StatelessWidget {
                 Text(
                   '\$${(cartItem.price * cartItem.quantity).toStringAsFixed(2)}',
                   style: const TextStyle(
-                    color: Color(0xFF5C6BC0),
+                    color: Color.fromARGB(255, 40, 108, 100),
                     fontWeight: FontWeight.bold,
                   ),
                 ),

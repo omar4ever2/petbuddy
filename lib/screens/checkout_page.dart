@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
 import '../providers/cart_provider.dart';
 import '../services/supabase_service.dart';
 import 'order_confirmation_page.dart';

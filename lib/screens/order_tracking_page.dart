@@ -484,7 +484,7 @@ class _OrderTrackingPageState extends State<OrderTrackingPage> {
               width: 20,
               height: 20,
               decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
+                color: const Color.fromARGB(255, 40, 108, 100),
                 shape: BoxShape.circle,
               ),
               child: const Icon(

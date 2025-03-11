@@ -203,12 +203,12 @@ class _LoginPageState extends State<LoginPage> {
               ElevatedButton(
                 onPressed: _isLoading ? null : _submitForm,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF5C6BC0),
+                  backgroundColor: const Color.fromARGB(255, 40, 108, 100),
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  disabledBackgroundColor: const Color(0xFF5C6BC0).withOpacity(0.6),
+                  disabledBackgroundColor: const Color.fromARGB(255, 40, 108, 100),
                 ),
                 child: _isLoading
                     ? const SizedBox(

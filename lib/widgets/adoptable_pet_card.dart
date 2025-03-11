@@ -17,7 +17,7 @@ class AdoptablePetCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => PetDetailsPage(pet: pet),
+            builder: (context) => PetDetailsPage(petId: pet.id),
           ),
         );
       },
@@ -161,7 +161,7 @@ class AdoptablePetCard extends StatelessWidget {
                         const Icon(
                           Icons.location_on,
                           size: 12,
-                          color: Color(0xFF5C6BC0),
+                          color: Color.fromARGB(255, 40, 108, 100),
                         ),
                         const SizedBox(width: 2),
                         Expanded(
@@ -185,7 +185,7 @@ class AdoptablePetCard extends StatelessWidget {
                       const Icon(
                         Icons.calendar_today,
                         size: 12,
-                        color: Color(0xFF5C6BC0),
+                        color: Color.fromARGB(255, 40, 108, 100),
                       ),
                       const SizedBox(width: 2),
                       Text(
@@ -226,7 +226,7 @@ class AdoptablePetCard extends StatelessWidget {
                             vertical: 2,
                           ),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF5C6BC0).withOpacity(0.1),
+                            color: const Color.fromARGB(255, 40, 108, 100).withOpacity(0.1),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
@@ -234,7 +234,7 @@ class AdoptablePetCard extends StatelessWidget {
                             style: const TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.bold,
-                              color: Color(0xFF5C6BC0),
+                              color: Color.fromARGB(255, 40, 108, 100),
                             ),
                           ),
                         ),
