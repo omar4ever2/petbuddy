@@ -230,7 +230,7 @@ class AdoptablePetCard extends StatelessWidget {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
-                            '\$${pet.adoptionFee!.toStringAsFixed(0)}',
+                            'LE ${pet.adoptionFee!.toStringAsFixed(0)}',
                             style: const TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.bold,

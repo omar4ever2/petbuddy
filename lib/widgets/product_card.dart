@@ -198,7 +198,7 @@ class ProductCard extends StatelessWidget {
                       children: [
                         if (discountPrice != null) ...[
                           Text(
-                            '\$${price.toStringAsFixed(2)}',
+                            'LE ${price.toStringAsFixed(2)}',
                             style: TextStyle(
                               fontSize: 12,
                               color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
@@ -206,7 +206,7 @@ class ProductCard extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            '\$${discountPrice!.toStringAsFixed(2)}',
+                            'LE ${discountPrice!.toStringAsFixed(2)}',
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -215,7 +215,7 @@ class ProductCard extends StatelessWidget {
                           ),
                         ] else
                           Text(
-                            '\$${price.toStringAsFixed(2)}',
+                            'LE ${price.toStringAsFixed(2)}',
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,

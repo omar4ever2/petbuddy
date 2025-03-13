@@ -360,7 +360,7 @@ class SupabaseService with ChangeNotifier {
 
   // Get user orders
   Future<List<Map<String, dynamic>>> getUserOrders() async {
-    if (!isAuthenticated) {
+      if (!isAuthenticated) {
       throw Exception('User not authenticated');
     }
     
@@ -473,7 +473,7 @@ class SupabaseService with ChangeNotifier {
 
   // Get user profile data
   Future<Map<String, dynamic>> getUserProfile() async {
-    if (!isAuthenticated) {
+      if (!isAuthenticated) {
       throw Exception('User not authenticated');
     }
     
@@ -515,13 +515,13 @@ class SupabaseService with ChangeNotifier {
       throw Exception('Failed to get user profile: $e');
     }
   }
-  
+
   // Update user profile
   Future<Map<String, dynamic>> updateUserProfile(Map<String, dynamic> data) async {
-    if (!isAuthenticated) {
-      throw Exception('User not authenticated');
-    }
-    
+      if (!isAuthenticated) {
+        throw Exception('User not authenticated');
+      }
+      
     try {
       // Instead of updating in Supabase, just return the data
       print('Updating user profile with data: $data');

@@ -183,36 +183,36 @@ class _PetDetailsPageState extends State<PetDetailsPage> with SingleTickerProvid
 
   Widget _buildPetDetails(bool isDarkMode) {
     return CustomScrollView(
-      slivers: [
-        // App bar with pet image
-        SliverAppBar(
+        slivers: [
+          // App bar with pet image
+          SliverAppBar(
           expandedHeight: 250,
-          pinned: true,
-          flexibleSpace: FlexibleSpaceBar(
+            pinned: true,
+            flexibleSpace: FlexibleSpaceBar(
             background: _pet!.imageUrl.isNotEmpty
-                ? Image.network(
+                  ? Image.network(
                     _pet!.imageUrl,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
                         color: isDarkMode ? Colors.grey[800] : Colors.grey[200],
-                        child: Icon(
+                            child: Icon(
                           _pet!.getSpeciesIcon(),
                           size: 80,
                           color: isDarkMode ? Colors.grey[600] : Colors.grey[400],
-                        ),
-                      );
-                    },
-                  )
-                : Container(
+                          ),
+                        );
+                      },
+                    )
+                  : Container(
                     color: isDarkMode ? Colors.grey[800] : Colors.grey[200],
-                    child: Icon(
+                        child: Icon(
                       _pet!.getSpeciesIcon(),
                       size: 80,
                       color: isDarkMode ? Colors.grey[600] : Colors.grey[400],
+                        ),
+                      ),
                     ),
-                  ),
-          ),
           actions: [
             IconButton(
               icon: const Icon(Icons.edit),
@@ -235,27 +235,27 @@ class _PetDetailsPageState extends State<PetDetailsPage> with SingleTickerProvid
         ),
         
         // Pet information
-        SliverToBoxAdapter(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                 // Pet name and basic info
-                Row(
+                  Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(
+                    children: [
+                      Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             _pet!.name,
-                            style: const TextStyle(
+                          style: const TextStyle(
                               fontSize: 28,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            fontWeight: FontWeight.bold,
                           ),
+                        ),
                           const SizedBox(height: 4),
                           Text(
                             '${_pet!.breed} · ${_pet!.age} old',
@@ -267,7 +267,7 @@ class _PetDetailsPageState extends State<PetDetailsPage> with SingleTickerProvid
                         ],
                       ),
                     ),
-                    Container(
+                        Container(
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                       decoration: BoxDecoration(
                         color: themeColor,
@@ -291,9 +291,9 @@ class _PetDetailsPageState extends State<PetDetailsPage> with SingleTickerProvid
                             ),
                           ),
                         ],
-                      ),
-                    ),
-                  ],
+                          ),
+                        ),
+                    ],
                 ),
                 const SizedBox(height: 24),
                 
@@ -405,10 +405,10 @@ class _PetDetailsPageState extends State<PetDetailsPage> with SingleTickerProvid
           const SizedBox(width: 16),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
+                    children: [
+                      Text(
                 title,
-                style: TextStyle(
+                        style: TextStyle(
                   fontSize: 14,
                   color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
                 ),
@@ -417,7 +417,7 @@ class _PetDetailsPageState extends State<PetDetailsPage> with SingleTickerProvid
               Text(
                 value,
                 style: const TextStyle(
-                  fontSize: 16,
+                          fontSize: 16,
                   fontWeight: FontWeight.w500,
                 ),
               ),
@@ -484,10 +484,10 @@ class _PetDetailsPageState extends State<PetDetailsPage> with SingleTickerProvid
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
                 const SizedBox(height: 12),
                 _buildVaccinationInfoRow(
                   title: 'Date',
@@ -495,7 +495,7 @@ class _PetDetailsPageState extends State<PetDetailsPage> with SingleTickerProvid
                   icon: Icons.calendar_today,
                   isDarkMode: isDarkMode,
                 ),
-                const SizedBox(height: 8),
+                  const SizedBox(height: 8),
                 _buildVaccinationInfoRow(
                   title: 'Next Due',
                   value: DateFormat('MMM dd, yyyy').format(nextDue),
@@ -517,17 +517,17 @@ class _PetDetailsPageState extends State<PetDetailsPage> with SingleTickerProvid
     required bool isDarkMode,
   }) {
     return Row(
-      children: [
-        Icon(
+                      children: [
+                        Icon(
           icon,
-          size: 16,
+                          size: 16,
           color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
-        ),
+                        ),
         const SizedBox(width: 8),
-        Text(
+                        Text(
           '$title: ',
-          style: TextStyle(
-            fontSize: 14,
+                          style: TextStyle(
+                            fontSize: 14,
             color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
           ),
         ),
@@ -536,9 +536,9 @@ class _PetDetailsPageState extends State<PetDetailsPage> with SingleTickerProvid
           style: const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w500,
-          ),
-        ),
-      ],
+                          ),
+                        ),
+                      ],
     );
   }
 
@@ -575,8 +575,8 @@ class _PetDetailsPageState extends State<PetDetailsPage> with SingleTickerProvid
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
+                  Row(
+                    children: [
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
@@ -608,9 +608,9 @@ class _PetDetailsPageState extends State<PetDetailsPage> with SingleTickerProvid
                               fontSize: 14,
                               color: isDarkMode ? Colors.grey[400] : Colors.grey[600],
                             ),
-                          ),
-                        ],
                       ),
+                    ],
+                  ),
                     ),
                   ],
                 ),
@@ -629,7 +629,7 @@ class _PetDetailsPageState extends State<PetDetailsPage> with SingleTickerProvid
                   const SizedBox(height: 4),
                   Text(
                     record['notes'],
-                    style: TextStyle(
+                        style: TextStyle(
                       fontSize: 14,
                       color: isDarkMode ? Colors.grey[300] : Colors.grey[700],
                     ),
@@ -679,7 +679,7 @@ class _PetDetailsPageState extends State<PetDetailsPage> with SingleTickerProvid
                 shape: BoxShape.circle,
               ),
               child: Icon(
-                icon,
+              icon,
                 size: 60,
                 color: themeColor,
               ),

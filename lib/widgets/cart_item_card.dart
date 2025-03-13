@@ -62,7 +62,7 @@ class CartItemCard extends StatelessWidget {
               children: [
                 const SizedBox(height: 4),
                 Text(
-                  '\$${(cartItem.price * cartItem.quantity).toStringAsFixed(2)}',
+                  'LE ${(cartItem.price * cartItem.quantity).toStringAsFixed(2)}',
                   style: const TextStyle(
                     color: Color.fromARGB(255, 40, 108, 100),
                     fontWeight: FontWeight.bold,
@@ -70,7 +70,7 @@ class CartItemCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  '\$${cartItem.price.toStringAsFixed(2)} each',
+                  'LE ${cartItem.price.toStringAsFixed(2)} each',
                   style: TextStyle(
                     color: Colors.grey[600],
                     fontSize: 12,
